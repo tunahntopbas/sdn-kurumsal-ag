@@ -1,5 +1,5 @@
 """
-Ders 6 - Adim 6.2: Anomali tespiti (SYN flood + port taramasi) + engelleme.
+Ders 6 - Adim 6.2-6.3: Anomali tespiti (SYN flood + port taramasi) + engelleme.
 Ders 5'teki yuk dengelemenin ustune eklenir.
 
 Fikir: POX gordugu her TCP SYN paketini kaynak IP'ye gore sayar.
@@ -73,6 +73,8 @@ class Tespit(object):
     self.syn = {}        # {kaynak IP: deque([zaman, ...])}
     self.portlar = {}    # {kaynak IP: {(hedef IP, hedef port): son zaman}}
     self.engelli = {}    # {kaynak IP: engelin bitis zamani}
+    self.gorulen = {}    # {akis anahtari: zaman}  ayni SYN'i iki kez saymamak icin
+    self.gecmis = deque()  # [(zaman, akis anahtari)] eskiyenleri temizlemek icin
 
   def engelli_mi(self, ip):
     bitis = self.engelli.get(ip)
@@ -85,9 +87,18 @@ class Tespit(object):
       return False
     return True
 
-  def kaydet(self, kaynak, hedef, hedef_port):
-    """Yeni bir SYN'i say. Esik asildiysa alarm metni, yoksa None doner."""
+  def kaydet(self, kaynak, hedef, kaynak_port, hedef_port):
+    """Yeni bir SYN'i say. Esik asildiysa alarm metni, yoksa None doner.
+    Ayni SYN yolundaki her switch'ten POX'a gelir; ikinci gelisi sayilmaz."""
     simdi = time.time()
+
+    while self.gecmis and simdi - self.gecmis[0][0] > SYN_PENCERE:
+      self.gorulen.pop(self.gecmis.popleft()[1], None)
+    akis = (kaynak, hedef, kaynak_port, hedef_port)
+    if akis in self.gorulen:
+      return None
+    self.gorulen[akis] = simdi
+    self.gecmis.append((simdi, akis))
 
     zamanlar = self.syn.setdefault(kaynak, deque())
     zamanlar.append(simdi)
@@ -144,7 +155,8 @@ class Ders6Switch(object):
         return                       # engelli kaynak: paketi yok say
       tcp_p = packet.find('tcp')
       if tcp_p is not None and tcp_p.SYN and not tcp_p.ACK:
-        alarm = self.tespit.kaydet(ip_p.srcip, ip_p.dstip, tcp_p.dstport)
+        alarm = self.tespit.kaydet(ip_p.srcip, ip_p.dstip,
+                                   tcp_p.srcport, tcp_p.dstport)
         if alarm is not None:
           self._engelle(ip_p.srcip, alarm)
           return
@@ -381,16 +393,18 @@ class Ders6Switch(object):
   def _kural_yaz(self, event, packet, out_port):
     """flow-mod: switch'e 'bu kaynak/hedef cifti icin su porttan cik' kurali yaz."""
     msg = of.ofp_flow_mod()
-    msg.match = of.ofp_match()
-    msg.match.dl_src = packet.src
-    msg.match.dl_dst = packet.dst
+    # YENI (6.3): MAC cifti yerine AKIS bazli kural. Eskiden "bu iki MAC
+    # arasindaki HER SEY" tek kuralla geciyordu; boylece kural bir kez
+    # yazilinca TCP SYN'ler POX'a hic gelmiyor, tarama gorunmuyordu.
+    # Simdi her yeni baglanti (IP + port) ilk paketinde POX'a haber verir.
+    msg.match = of.ofp_match.from_packet(packet, event.port)
     msg.idle_timeout = IDLE_TIMEOUT
     msg.hard_timeout = HARD_TIMEOUT
     msg.actions.append(of.ofp_action_output(port=out_port))
     # Kuralin yaninda, bekleyen ilk paketi de gonder
     msg.data = event.ofp
     self.connection.send(msg)
-    log.info("FLOW-MOD   switch=%s  %s -> %s  cikis portu=%s",
+    log.info("FLOW-MOD   switch=%s  %s -> %s  cikis portu=%s  [akis bazli]",
              dpid_to_str(self.dpid), packet.src, packet.dst, out_port)
 
 
