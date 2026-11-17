@@ -1,0 +1,14 @@
+<section id="sinirlar">
+<h2>Bilinen sınırlamalar</h2>
+<div class="cols" style="row-gap:48px">
+<div class="col"><h3>Sabit eşikler</h3><p>Dakikada birkaç port deneyen yavaş bir tarama yakalanmaz.</p></div>
+<div class="col"><h3>Adres başına sayım</h3><p>Çok sayıda adresten gelen dağıtık saldırı (DDoS) yakalanmaz.</p></div>
+<div class="col"><h3>Açık bağlantılar</h3><p>Alarmdan önce açılmış bir bağlantı en fazla 30 sn daha sürer.</p></div>
+<div class="col"><h3>Sağlık kontrolü yok</h3><p>Çöken bir sunucu sırası gelince yine seçilir.</p></div>
+<div class="col"><h3>Tek denetleyici</h3><p>POX durursa yazılmış kurallar çalışır ama yeni bağlantı kurulamaz.</p></div>
+<div class="col"><h3>Tek koşu ölçüm</h3><p>Ölçümler Mininet’te ve tek koşuyla yapıldı.</p></div>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Projenin sınırlarını da söylemek istiyorum. Eşikler sabit; çok yavaş yapılan bir tarama yakalanmaz. Sayım gönderen adrese göre; saldırgan çok sayıda farklı adres kullanırsa her adres sıfırdan başlar. Engel yeni bağlantıları durduruyor, alarmdan önce açılmış bir bağlantı kuralının süresi dolana kadar devam ediyor. Sunucuların ayakta olup olmadığına bakmıyoruz. Tek bir denetleyici var. Ölçümler sanal ağda ve tek koşuyla yapıldı. Bunlar geliştirmeye açık noktalar; örneğin OpenFlow 1.3’e geçilse grup tablolarıyla yük dengeleme switch’in kendisinde yapılabilirdi.</aside>
+</section>

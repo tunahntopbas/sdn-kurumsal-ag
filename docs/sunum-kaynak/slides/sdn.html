@@ -1,0 +1,32 @@
+<section id="sdn">
+<h2>SDN: kararı switch’ten almak</h2>
+<div style="display:flex; gap:144px">
+<!-- Sol: kutular 0,340,200,90 / 280,340,200,90 / 560,340,200,90 -->
+<div style="position:relative; width:760px; height:560px">
+<p class="dhead" style="left:0; top:0; width:760px">Geleneksel ağ</p>
+<p class="capl" style="left:0; top:72px; width:740px">Her switch hem karar verir hem paketi taşır. Davranışı değiştirmek için cihazlar tek tek ayarlanır.</p>
+<div class="box plain" style="left:0; top:340px; width:200px; height:90px"><p class="t">karar + iletim</p></div>
+<div class="box plain" style="left:280px; top:340px; width:200px; height:90px"><p class="t">karar + iletim</p></div>
+<div class="box plain" style="left:560px; top:340px; width:200px; height:90px"><p class="t">karar + iletim</p></div>
+<x-connector class="line" x1="200" y1="385" x2="280" y2="385" head="none"></x-connector>
+<x-connector class="line" x1="480" y1="385" x2="560" y2="385" head="none"></x-connector>
+</div>
+<!-- Sağ: denetleyici 180,170,400,90; switchler 0/280/560,340,200,90; bara y=300 -->
+<div style="position:relative; width:760px; height:560px">
+<p class="dhead" style="left:0; top:0; width:760px; color:#1F4FD1">SDN</p>
+<p class="capl" style="left:0; top:72px; width:740px">Karar tek bir denetleyicide. Switch’ler sadece yazılan kuralı uygular.</p>
+<div class="box ctrl" style="left:180px; top:170px; width:400px; height:90px"><p class="t">Denetleyici: karar</p></div>
+<div class="box sdn" style="left:0; top:340px; width:200px; height:90px"><p class="t">iletim</p></div>
+<div class="box sdn" style="left:280px; top:340px; width:200px; height:90px"><p class="t">iletim</p></div>
+<div class="box sdn" style="left:560px; top:340px; width:200px; height:90px"><p class="t">iletim</p></div>
+<x-connector class="wire" x1="380" y1="260" x2="380" y2="300" head="none"></x-connector>
+<x-connector class="wire" x1="100" y1="300" x2="660" y2="300" head="none"></x-connector>
+<x-connector class="wire" x1="100" y1="300" x2="100" y2="340"></x-connector>
+<x-connector class="wire" x1="380" y1="300" x2="380" y2="340"></x-connector>
+<x-connector class="wire" x1="660" y1="300" x2="660" y2="340"></x-connector>
+</div>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Bir ağda iki iş var: karar vermek, yani bu paket nereye gitmeli, ve paketi taşımak. Geleneksel ağda her switch ikisini birlikte yapar, içinde kendi küçük beyni vardır. SDN’de, yani yazılım tanımlı ağda, karar verme işi switch’lerden alınıp tek bir programa, denetleyiciye verilir. Switch’ler sadece denetleyicinin yazdığı kuralları uygular. Benzetmeyle: geleneksel ağda her kavşakta kendi kafasına göre karar veren bir trafik polisi var; SDN’de kavşaklarda sadece ışıklar var ve hepsini tek bir kontrol odası yönetiyor. Bu sayede ağın davranışını cihazlara dokunmadan, Python kodu yazarak değiştirebiliyoruz.</aside>
+</section>

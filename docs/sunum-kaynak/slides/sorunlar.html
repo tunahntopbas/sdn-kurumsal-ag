@@ -1,0 +1,15 @@
+<section id="sorunlar" class="alt">
+<h2>Yolda çıkan sorunlar</h2>
+<table class="tbl s24">
+<tr><th style="width:34%">Ne oldu</th><th style="width:38%">Neden</th><th>Nasıl çözdük</th></tr>
+<tr><td>Cevap sanal adrese çevrilmeden gitti</td><td>Dönüş kuralı ile normal kural aynı öncelikteydi</td><td>Yük dengelemeye 40000 öncelik</td></tr>
+<tr><td>Bağlantının ikinci paketi başka sunucuya gitti</td><td>Paket kural yazılmadan POX’a ulaştı</td><td>120 sn bağlantı hafızası</td></tr>
+<tr><td>Doğrudan port taraması alarm vermedi</td><td>Cihaz çifti kuralı SYN’leri POX’tan sakladı</td><td>Bağlantı başına kural</td></tr>
+<tr><td>SYN’ler iki kez sayıldı</td><td>Aynı paket her switch’ten ayrı geldi</td><td>Bağlantıyı bir kez sayan kontrol</td></tr>
+<tr><td>Ölçüm tablosu yanlış çıktı</td><td>Kurallar senaryo bitmeden siliniyordu</td><td>Tabloyu senaryo sürerken okumak</td></tr>
+<tr><td>WAN gecikmesi 40 yerine 50–240 ms</td><td>Mac’teki sanal makinede boştaki işlemci zamanlayıcıyı geç tetikledi</td><td>netem_keepalive.sh</td></tr>
+</table>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Proje adım adım geliştirildi ve her adım git’e ayrı kaydedildi. Bu tablodaki sorunların hepsi gerçek testlerde ortaya çıktı. Öncelik sorunu ve bağlantı hafızası yük dengelemede, kör nokta ve çift sayım anomali tespitinde yaşandı. Ölçüm tablosu sorunu şuydu: kurallar senaryo bitmeden süresi dolup siliniyordu, sonuçta düşük sayılar görüyorduk; tabloyu senaryo sürerken örnekleyen bir izleyici yazdık. Son satır Mac’e özel bir sorun: sanal makinede işlemci boşta beklerken gecikme zamanlayıcısı geç tetikleniyor ve WAN gecikmesi dalgalanıyordu. İşlemciyi düşük öncelikli bir döngüyle uyanık tutan küçük bir betikle çözdük.</aside>
+</section>

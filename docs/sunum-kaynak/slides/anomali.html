@@ -1,0 +1,12 @@
+<section id="anomali">
+<p class="label" style="color:#C4302B">Uygulama 2 · Anomali tespiti</p>
+<h2>POX her SYN’i gönderene göre sayıyor</h2>
+<div class="cols2" style="flex:1">
+<div class="col red rise" style="--i:0"><p class="big">50 SYN</p><h3>5 saniyede: SYN flood</h3><p>Saldırgan çok sayıda bağlantı isteği gönderir ama hiçbirini tamamlamaz. Sunucunun ve switch tablosunun kaynakları tükenir.</p></div>
+<div class="col red rise" style="--i:1"><p class="big">10 port</p><h3>10 saniyede: port taraması</h3><p>Saldırgan hangi servislerin açık olduğunu bulmak için çok sayıda farklı portu dener. Genelde bir saldırının ilk adımıdır.</p></div>
+</div>
+<div class="code"><p><span class="c">eşik aşılınca, saldırganın switch’ine:</span></p><p>ip, nw_src=<span class="r">10.0.2.11</span>, priority=60000, hard_timeout=60  actions = <span class="r">drop</span></p></div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>İkinci uygulamamız anomali tespiti. Her TCP bağlantısı bir SYN paketiyle başlar: “seninle bağlantı kurmak istiyorum”. POX ağda gördüğü her SYN’i gönderen adrese göre sayıyor ve iki şey arıyor. 5 saniye içinde 50 SYN gelirse bu bir SYN flood. 10 saniye içinde 10 farklı port denenirse bu bir port taraması. Eşik aşılınca POX, saldırganın bağlı olduğu switch’e bir engel kuralı yazıyor: bu adresten gelen her şeyi düşür. OpenFlow’da eylemi olmayan kural paketi düşürür. Kural en yüksek öncelikte ve 60 saniye sonra kendiliğinden siliniyor; böylece yanlış bir alarm kalıcı zarar vermiyor.</aside>
+</section>

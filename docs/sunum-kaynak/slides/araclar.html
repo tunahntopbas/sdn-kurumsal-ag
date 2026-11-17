@@ -1,0 +1,16 @@
+<section id="araclar" class="alt">
+<h2>Kullandığımız araçlar</h2>
+<table class="tbl">
+<tr><th style="width:24%">Araç</th><th style="width:46%">Ne işe yarar</th><th>Projede nerede</th></tr>
+<tr><td>Mininet</td><td>Tek bilgisayarda sanal ağ kurar</td><td>kurumsal_ag.py</td></tr>
+<tr><td>Open vSwitch</td><td>Kural uygulayan sanal switch</td><td>s1, s2, s3, s4</td></tr>
+<tr><td>POX</td><td>Python ile yazılmış SDN denetleyicisi</td><td>ders4, ders5, ders6</td></tr>
+<tr><td>OpenFlow 1.0</td><td>Denetleyici ile switch arasındaki protokol</td><td>packet-in, flow-mod</td></tr>
+<tr><td>Linux router, netem</td><td>Ağlar arası yönlendirme, hat hızı ve gecikmesi</td><td>r1, r2, r3 · WAN 20 ms</td></tr>
+<tr><td>curl, hping3, nmap</td><td>Normal trafik, SYN flood, port taraması</td><td>senaryo.py</td></tr>
+</table>
+<p class="small">Mininet sadece Linux’ta çalıştığı için proje, Mac üzerinde Multipass ile açılan bir Ubuntu 24.04 sanal makinesinde çalışıyor.</p>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Hepsi açık kaynak araçlar. Mininet tek bir bilgisayarın içinde sanal bilgisayarlar, switch’ler ve kablolar kuruyor; her sanal bilgisayar gerçek Linux komutları çalıştırabiliyor. Open vSwitch OpenFlow konuşan sanal switch, veri merkezlerinde de kullanılıyor. POX Python ile yazılmış denetleyici; uygulamalarımızı onun modülü olarak yazdık. Router’lar IP yönlendirmesi açılmış normal Linux makineleri; hat hızlarını ve gecikmeleri Linux’un netem aracıyla verdik. Trafik üretmek için curl, saldırı için hping3 ve nmap kullandık. Switch tablolarını ovs-ofctl ile okuyarak ölçtük.</aside>
+</section>

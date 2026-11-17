@@ -134,3 +134,13 @@ Tablonun tamamı: [`sonuclar/karsilastirma.md`](sonuclar/karsilastirma.md)
 - Engel kuralı yeni akışları durdurur. Alarmdan önce açılmış akışlar, süreleri dolana kadar (en fazla 30 sn) devam eder.
 - Sunucu sağlık kontrolü yok: çöken bir sunucu seçilmeye devam eder.
 - Tek denetleyici var. Denetleyici çökerse yeni akış kurulamaz.
+
+## Sunum ve anlatım belgeleri
+
+`docs/` klasöründe:
+
+- [`SDN_Kurumsal_Ag_Sunum.html`](docs/SDN_Kurumsal_Ag_Sunum.html): 27 slaytlık sunum, tek dosya. Tarayıcıda açın; ← → ile slayt değiştirin, F tam ekran, N konuşmacı notları.
+- [`proje-anlatimi.html`](docs/proje-anlatimi.html): projeyi sıfırdan anlatan sayfa.
+- [`SDN_Kurumsal_Ag_Proje_Anlatimi.pdf`](docs/SDN_Kurumsal_Ag_Proje_Anlatimi.pdf): anlatım sayfasının PDF hali.
+- [`sunum-kaynak/`](docs/sunum-kaynak/): sunumun kaynak slaytları. Tek dosyalık HTML'i yeniden üretmek için:
+  `python3 docs/sunum-kaynak/build_standalone.py docs/sunum-kaynak docs/SDN_Kurumsal_Ag_Sunum.html`

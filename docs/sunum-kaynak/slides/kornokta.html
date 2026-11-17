@@ -1,0 +1,11 @@
+<section id="kornokta" class="alt">
+<h2>Gözden kaçan saldırı</h2>
+<p class="lede">Tespit kodu doğruydu ama kuralların yazılma biçimi saldırıyı POX’tan saklıyordu. Bunu ölçüm sırasında fark ettik.</p>
+<div class="cols2" style="flex:1">
+<div class="col red"><p class="label" style="color:#C4302B">Önce</p><h3>Cihaz çifti başına kural</h3><div class="code"><p>dl_src=b1h2, dl_dst=web1 → output</p></div><p>“Bu iki cihaz arasındaki her şeyi geçir.” Kural bir kez yazılınca yeni SYN’ler POX’a hiç uğramadı. Sunucuya doğrudan tarama alarm vermedi, 80/tcp açık bulundu.</p></div>
+<div class="col blue"><p class="label" style="color:#1F4FD1">Sonra</p><h3>Bağlantı başına kural</h3><div class="code"><p>IP + port eşleşmesi (from_packet) → output</p></div><p>Her yeni bağlantının ilk paketi POX’a uğruyor. Tarama yakalandı, 0 port bulundu. Aynı SYN her switch’ten ayrı geldiği için bağlantıyı bir kez sayan kontrol eklendi.</p></div>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Projenin en öğretici kısmı burası. İlk sürümde normal kurallar cihaz çifti başına yazılıyordu: şu iki MAC adresi arasındaki her şeyi geçir. Ölçümde fark ettik ki iki cihaz arasında bir kez kural yazıldıktan sonra yeni SYN paketleri POX’a hiç uğramıyor, tablodaki kuralla geçiyor. Bir şube kullanıcısı sunucuya doğrudan port taraması yaptığında hiçbir alarm çalmadı ve açık 80 portunu buldu. Çözüm olarak kuralları bağlantı başına, yani IP ve port eşleşmesiyle yazmaya geçtik. Artık her yeni bağlantının ilk paketi POX’a uğruyor ve tarama yakalanıyor. Bunun da bir yan etkisi çıktı: aynı SYN yoldaki her switch’ten ayrı ayrı geldiği için iki kez sayılıyordu; aynı bağlantıyı bir kez sayan bir kontrol ekledik.</aside>
+</section>

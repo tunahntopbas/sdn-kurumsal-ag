@@ -1,0 +1,15 @@
+<section id="adresler" class="alt">
+<h2>Adres planı</h2>
+<table class="tbl">
+<tr><th style="width:24%">Ağ</th><th style="width:19%">Adres bloğu</th><th style="width:18%">Kapı</th><th style="width:10%">Switch</th><th>Cihazlar</th></tr>
+<tr><td>Merkez, sunucular</td><td>10.0.1.0/24</td><td>10.0.1.1 · r1</td><td>s1</td><td>web1 .11 · web2 .12 · web3 .13 · VIP .100</td></tr>
+<tr><td>Merkez, kullanıcılar</td><td>10.0.2.0/24</td><td>10.0.2.1 · r1</td><td>s2</td><td>pc1 .11 · pc2 .12</td></tr>
+<tr><td>Şube 1</td><td>10.1.1.0/24</td><td>10.1.1.1 · r2</td><td>s3</td><td>b1h1 .11 · b1h2 .12</td></tr>
+<tr><td>Şube 2</td><td>10.2.1.0/24</td><td>10.2.1.1 · r3</td><td>s4</td><td>b2h1 .11 · b2h2 .12</td></tr>
+<tr><td>WAN hatları</td><td>10.255.1.0/30<br>10.255.2.0/30</td><td>–</td><td>–</td><td>r1 ile r2, r1 ile r3 (yıldız yapı)</td></tr>
+</table>
+<p class="small">Doğrulama: her router TTL’yi 1 azaltır. Şubeden merkeze ping’te ttl=62, şubeden şubeye ttl=61 görüldü.</p>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Her ağın kendi /24 bloğu var ve kapısı, yani gateway’i, o ofisin router’ı. WAN hatları /30, çünkü bir hatta sadece iki router var. Yapı yıldız şeklinde: bütün şubeler merkezdeki r1’e bağlı, şubeden şubeye trafik de r1 üzerinden geçiyor. Ağda döngü yok; döngülü bir ağda yayın paketleri sonsuza kadar dolaşırdı. Router’lar normal Linux router; SDN switch katmanında çalışıyor. Gerçek kurumlarda da OpenFlow çoğunlukla switch ve veri merkezi katmanında kullanılıyor.</aside>
+</section>

@@ -1,0 +1,26 @@
+<section id="kontrol">
+<h2>Kontrol katmanı: tek beyin, dört switch</h2>
+<!-- POX 432,0,800,150 · bara y=300 · switchler 88/504/920/1336,420,240,80 (merkezler 208/624/1040/1456) -->
+<div style="position:relative; width:1664px; height:600px">
+<div class="box ctrl" style="left:432px; top:0; width:800px; height:150px"><p class="h">POX denetleyicisi</p><p class="t" style="color:#4E5562; font-weight:400">öğrenen switch · yük dengeleme · anomali tespiti</p></div>
+<div class="box sdn" style="left:88px; top:420px; width:240px; height:80px"><p class="t">s3</p></div>
+<div class="box sdn" style="left:504px; top:420px; width:240px; height:80px"><p class="t">s1</p></div>
+<div class="box sdn" style="left:920px; top:420px; width:240px; height:80px"><p class="t">s2</p></div>
+<div class="box sdn" style="left:1336px; top:420px; width:240px; height:80px"><p class="t">s4</p></div>
+<x-connector class="wire" x1="832" y1="150" x2="832" y2="300" head="none"></x-connector>
+<x-connector class="wire" x1="208" y1="300" x2="1456" y2="300" head="none"></x-connector>
+<x-connector class="wire" x1="208" y1="300" x2="208" y2="420"></x-connector>
+<x-connector class="wire" x1="624" y1="300" x2="624" y2="420"></x-connector>
+<x-connector class="wire" x1="1040" y1="300" x2="1040" y2="420"></x-connector>
+<x-connector class="wire" x1="1456" y1="300" x2="1456" y2="420"></x-connector>
+<p class="wlabel" style="left:856px; top:196px; width:400px">↑ packet-in</p>
+<p class="wlabel" style="left:400px; top:196px; width:408px; text-align:right">flow-mod · packet-out ↓</p>
+<p class="cap" style="left:48px; top:520px; width:320px">şube 1</p>
+<p class="cap" style="left:464px; top:520px; width:320px">sunucu ağı</p>
+<p class="cap" style="left:880px; top:520px; width:320px">merkez kullanıcı</p>
+<p class="cap" style="left:1296px; top:520px; width:320px">şube 2</p>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Haritada denetleyiciyi göstermedim, çünkü veri ağının parçası değil. POX her switch’e ayrı bir kontrol bağlantısıyla, 6633 portu üzerinden bağlı. Üç uygulamamız aynı POX programının içinde çalışıyor ve dört switch’i birlikte yönetiyor: öğrenen switch adresleri öğrenip normal trafiği yönlendiriyor, yük dengeleme sanal adrese gelen trafiği dağıtıyor, anomali tespiti saldırıları sayıyor. Switch’ten POX’a packet-in gidiyor, POX’tan switch’e flow-mod ve packet-out geliyor.</aside>
+</section>

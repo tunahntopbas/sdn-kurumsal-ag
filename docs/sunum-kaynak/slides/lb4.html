@@ -1,0 +1,26 @@
+<section id="lb4" class="step">
+<p class="steptag">Yük dengeleme · 4 / 4</p>
+<h2>Sonraki bağlantı web3’e</h2>
+<p class="lede">Bu bağlantının diğer paketleri POX’a uğramadan kurallarla gidiyor. Yeni bağlantı gelince sıra web3’te, sonra web1’de. Ölçümde 60 istek 20 / 20 / 20 dağıldı.</p>
+<x-embed style="position:absolute; left:128px; top:340px; width:1664px; height:580px"><style>html,body{margin:0;height:100%;background:transparent}svg{display:block;width:100%;height:100%;font-family:-apple-system,"Helvetica Neue",Arial,sans-serif}</style><svg id="s" viewBox="0 0 960 470"></svg><script>
+var H={e:["r1-s1","s1-web3"],r:[],g:[],n:["r1","s1","web1","web2","web3"],b:["s1","→ POX","a"],x:null,f:20};
+var C={i:"#14171C",m:"#868D99",d:"#5E6573",a:"#1F4FD1",r:"#C4302B",g:"#1C7A4E",p:"#F7F8FA",l:"#D8DCE2"};
+var N={r2:[150,95,"r"],r1:[480,95,"r"],r3:[810,95,"r"],s3:[150,205,"s"],s1:[370,205,"s"],s2:[590,205,"s"],s4:[810,205,"s"],b1h1:[100,318,"p",".11"],b1h2:[200,318,"p",".12"],web1:[300,318,"v",".11"],web2:[370,318,"v",".12"],web3:[440,318,"v",".13"],pc1:[550,318,"p",".11"],pc2:[630,318,"p",".12"],b2h1:[760,318,"p",".11"],b2h2:[860,318,"p",".12"]};
+var E=[["r2","r1"],["r1","r3"],["r2","s3"],["r3","s4"],["r1","s1"],["r1","s2"],["s3","b1h1"],["s3","b1h2"],["s1","web1"],["s1","web2"],["s1","web3"],["s2","pc1"],["s2","pc2"],["s4","b2h1"],["s4","b2h2"]];
+var F=H.f,D=H.e.length+H.r.length+H.g.length>0,o="";
+function has(L,a,b){return L.indexOf(a+"-"+b)>=0||L.indexOf(b+"-"+a)>=0}
+function T(x,y,t,c,an,w,mono){return '<text x="'+x+'" y="'+y+'" fill="'+c+'" text-anchor="'+(an||"middle")+'" font-size="'+F+'" font-weight="'+(w||400)+'"'+(mono?' font-family="Menlo,Consolas,monospace"':'')+'>'+t+'</text>'}
+function P(a,b){var A=N[a],B=N[b];if(A[2]=="r"&&B[2]=="r"||B[2]=="s"&&a!="r1")return "M"+A[0]+","+A[1]+"L"+B[0]+","+B[1];if(a=="r1")return "M480,95L480,148L"+B[0]+",148L"+B[0]+","+B[1];return "M"+A[0]+","+A[1]+"L"+A[0]+",268L"+B[0]+",268L"+B[0]+","+B[1]}
+[[40,24,220,436,"ŞUBE 1","10.1.1.0/24",150],[280,24,400,436,"MERKEZ"],[700,24,220,436,"ŞUBE 2","10.2.1.0/24",810]].forEach(function(z){o+='<rect x="'+z[0]+'" y="'+z[1]+'" width="'+z[2]+'" height="'+z[3]+'" fill="none" stroke="'+C.l+'" stroke-width="1.5"/>'+T(z[0]+12,z[1]+26,z[4],C.m,"start",700);if(z[5])o+=T(z[6],450,z[5],C.d,0,0,1)});
+o+=T(370,450,"10.0.1.0/24",C.d,0,0,1)+T(590,450,"10.0.2.0/24",C.d,0,0,1)+T(315,82,"WAN · 10 Mbit/s · 20 ms",C.d)+T(645,82,"WAN · 10 Mbit/s · 20 ms",C.d);
+E.forEach(function(e){var a=e[0],b=e[1],w=N[a][2]=="r"&&N[b][2]=="r",c=C.m,sw=w?3:1.6,da="",op=1;if(has(H.r,a,b)){c=C.r;sw=w?4:3.5;da=' stroke-dasharray="7 5"'}else if(has(H.g,a,b)){c=C.g;sw=w?4:3.5}else if(has(H.e,a,b)){c=C.a;sw=w?4:3.5}else{if(w)c=C.i;if(D)op=.2}o+='<path d="'+P(a,b)+'" fill="none" stroke="'+c+'" stroke-width="'+sw+'" stroke-linejoin="round" opacity="'+op+'"'+da+'/>'});
+o+='<path d="M286,388L286,396L454,396L454,388" fill="none" stroke="'+C.a+'" stroke-width="1.6"/>'+T(370,420,"VIP 10.0.1.100",C.a,0,600,1);
+for(var k in N){var n=N[k],x=n[0],y=n[1],g='<g opacity="'+((!D||H.n.indexOf(k)>=0)?1:.3)+'">';if(n[2]=="r")g+='<circle cx="'+x+'" cy="'+y+'" r="24" fill="'+C.p+'" stroke="'+C.i+'" stroke-width="2"/>'+T(x,y+F*.35,k,C.i,0,700);else if(n[2]=="s")g+='<rect x="'+(x-36)+'" y="'+(y-16)+'" width="72" height="32" rx="3" fill="'+C.a+'"/>'+T(x,y+F*.35,k,C.p,0,700);else{if(n[2]=="v"){g+='<rect x="'+(x-13)+'" y="'+(y-18)+'" width="26" height="36" rx="2" fill="'+C.p+'" stroke="'+C.i+'" stroke-width="1.6"/>';[-8,-1,6].forEach(function(d){g+='<line x1="'+(x-7)+'" x2="'+(x+7)+'" y1="'+(y+d)+'" y2="'+(y+d)+'" stroke="'+C.i+'" stroke-width="1.4"/>'})}else g+='<rect x="'+(x-17)+'" y="'+(y-14)+'" width="34" height="23" rx="2" fill="'+C.p+'" stroke="'+C.i+'" stroke-width="1.6"/><path d="M'+(x-8)+','+(y+15)+'h16M'+x+','+(y+9)+'v6" stroke="'+C.i+'" stroke-width="1.6"/>';g+=T(x,y+40,k,C.i,0,600)+T(x,y+40+F,n[3],C.d,0,0,1)}o+=g+'</g>'}
+if(H.x){var q=N[H.x];o+='<rect x="'+(q[0]-44)+'" y="'+(q[1]-24)+'" width="88" height="48" rx="4" fill="none" stroke="'+C.r+'" stroke-width="2.5"/>'}
+if(H.b){var m=N[H.b[0]],bc=H.b[2]=="r"?C.r:C.a,bw=H.b[1].length*F*.6+24,bx=m[0]+52;o+='<line x1="'+(m[0]+36)+'" x2="'+bx+'" y1="'+m[1]+'" y2="'+m[1]+'" stroke="'+bc+'" stroke-width="1.6"/><rect x="'+bx+'" y="'+(m[1]-F*.85)+'" width="'+bw+'" height="'+F*1.7+'" rx="3" fill="'+C.p+'" stroke="'+bc+'" stroke-width="1.6"/>'+T(bx+bw/2,m[1]+F*.35,H.b[1],bc,0,700)}
+document.getElementById("s").innerHTML=o;
+</script></x-embed>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Kurallar yazıldıktan sonra bu bağlantının diğer paketleri POX’a hiç uğramadan, switch’teki kurallarla gidiyor. Yeni bir bağlantı gelince POX yine soruluyor ve bu sefer sıradaki sunucuyu, web3’ü seçiyor; sonra web1, sonra web2. Ölçümde 4 kullanıcının attığı 60 istek üç sunucuya tam olarak 20, 20, 20 dağıldı ve hiçbir istek başarısız olmadı.</aside>
+</section>

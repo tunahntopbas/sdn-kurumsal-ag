@@ -1,0 +1,105 @@
+/* Renk: mürekkep #14171C, kâğıt #F7F8FA, ikinci zemin #EDF0F4, SDN mavisi #1F4FD1, saldırı kırmızısı #C4302B.
+   Yazı ölçeği: 96 / 64 / 40 / 30 / 24. */
+section {
+  background: #F7F8FA;
+  color: #14171C;
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 30px;
+  line-height: 1.4;
+  padding: 128px 128px 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  box-sizing: border-box;
+  counter-increment: page;
+}
+section.alt { background: #EDF0F4; }
+section.accent { background: #1F4FD1; color: #F7F8FA; }
+section.cover { padding: 128px; justify-content: space-between; gap: 0; }
+
+h1, h2, h3 { font-family: 'Archivo', Arial, sans-serif; color: #14171C; }
+h1 { font-size: 96px; font-weight: 700; line-height: 1.05; letter-spacing: -2px; }
+h2 { font-size: 64px; font-weight: 600; line-height: 1.1; letter-spacing: -1px; }
+h3 { font-size: 40px; font-weight: 600; line-height: 1.15; }
+p { font-size: 30px; }
+section.accent h1, section.accent h2 { color: #F7F8FA; }
+
+.lede { font-size: 30px; color: #4E5562; max-width: 1340px; }
+section.accent .lede { color: #D6E0FF; }
+.small { font-size: 24px; color: #4E5562; }
+.label { font-family: 'Archivo', Arial, sans-serif; font-size: 24px; font-weight: 600; color: #5E6573; }
+.mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; }
+
+.foot { position: absolute; left: 128px; bottom: 64px; width: 1100px; font-family: 'Archivo', Arial, sans-serif; font-size: 24px; color: #5E6573; }
+.pg { position: absolute; left: 1592px; bottom: 64px; width: 200px; text-align: right; font-family: 'Archivo', Arial, sans-serif; font-size: 24px; color: #5E6573; }
+.pg::after { content: counter(page); }
+section.accent .foot, section.accent .pg { color: #D6E0FF; }
+
+.steptag { position: absolute; left: 1392px; top: 140px; width: 400px; text-align: right; font-family: 'Archivo', Arial, sans-serif; font-size: 24px; font-weight: 600; color: #1F4FD1; }
+.steptag.red { color: #C4302B; }
+section.step h2 { max-width: 1220px; }
+section.step .lede { color: #14171C; }
+
+/* Kapak */
+.spec { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; border-top: 2px solid #14171C; padding-top: 24px; }
+.spec div { display: flex; flex-direction: column; gap: 4px; }
+.spec .k { font-family: 'Archivo', Arial, sans-serif; font-size: 24px; color: #5E6573; }
+.spec .v { font-family: 'Archivo', Arial, sans-serif; font-size: 40px; font-weight: 600; color: #14171C; }
+
+/* Sütunlar */
+.cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 64px; }
+.cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 96px; }
+.col { display: flex; flex-direction: column; gap: 16px; border-top: 3px solid #14171C; padding-top: 24px; }
+.col p { color: #4E5562; }
+.col .mono { color: #1F4FD1; }
+.col .alert { color: #C4302B; }
+.col.red { border-top-color: #C4302B; }
+.col.blue { border-top-color: #1F4FD1; }
+.big { font-family: 'Archivo', Arial, sans-serif; font-size: 96px; font-weight: 700; line-height: 1; color: #14171C; letter-spacing: -2px; }
+
+table.tbl { font-family: 'Source Serif 4', Georgia, serif; font-size: 26px; color: #14171C; width: 100%; }
+table.tbl.s24 { font-size: 24px; }
+
+/* Kod ve kural kutuları */
+.code { background: #EDF0F4; border-radius: 4px; padding: 24px 32px; display: flex; flex-direction: column; gap: 4px; }
+section.alt .code { background: #F7F8FA; }
+.code p { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; line-height: 1.5; color: #14171C; }
+.code .c { color: #5E6573; }
+.code .a { color: #1F4FD1; }
+.code .r { color: #C4302B; }
+.rulerow { display: grid; grid-template-columns: 300px 1fr; gap: 40px; align-items: start; }
+.rulename { display: flex; flex-direction: column; gap: 4px; }
+.rulename .n { font-family: 'Archivo', Arial, sans-serif; font-size: 30px; font-weight: 600; }
+.rulename .k { font-family: 'Archivo', Arial, sans-serif; font-size: 24px; color: #5E6573; }
+
+/* Çizimler */
+.box { position: absolute; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 4px; }
+.box.plain { background: #F7F8FA; border: 2px solid #14171C; }
+.box.sdn { background: #1F4FD1; }
+.box.ctrl { background: #E6ECFB; border: 2px solid #1F4FD1; }
+.box .t { font-family: 'Archivo', Arial, sans-serif; font-size: 26px; font-weight: 600; text-align: center; color: #14171C; }
+.box.sdn .t { color: #F7F8FA; }
+.box.ctrl .t { color: #1F4FD1; }
+.box .h { font-family: 'Archivo', Arial, sans-serif; font-size: 40px; font-weight: 600; text-align: center; color: #1F4FD1; }
+.wire { color: #1F4FD1; border-width: 3px; border-style: dashed; }
+.line { color: #868D99; border-width: 3px; }
+.cap { position: absolute; font-size: 26px; color: #4E5562; text-align: center; }
+.capl { position: absolute; font-size: 26px; color: #4E5562; }
+.dhead { position: absolute; font-family: 'Archivo', Arial, sans-serif; font-size: 40px; font-weight: 600; color: #14171C; }
+.wlabel { position: absolute; font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; color: #1F4FD1; }
+
+/* Ölçüm grafiği */
+.bars { display: flex; flex-direction: column; gap: 36px; }
+.metric { display: flex; flex-direction: column; gap: 10px; }
+.metric .mt { font-family: 'Archivo', Arial, sans-serif; font-size: 30px; font-weight: 600; }
+.bar { display: grid; grid-template-columns: 180px 1fr 110px; gap: 20px; align-items: center; }
+.bar .who { font-family: 'Archivo', Arial, sans-serif; font-size: 24px; color: #4E5562; }
+.bar .num { font-family: 'Archivo', Arial, sans-serif; font-size: 30px; font-weight: 700; text-align: right; }
+.track { height: 28px; background: #E2E6EC; }
+.fill { height: 28px; background: #868D99; }
+.fill.on { background: #1F4FD1; }
+.stat { display: flex; flex-direction: column; gap: 8px; border-left: 3px solid #14171C; padding-left: 40px; }
+
+/* Hareket */
+.rise { animation: rise 600ms cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--i, 0) * 120ms); }
+@keyframes rise { from { opacity: 0; transform: translateY(24px); } }

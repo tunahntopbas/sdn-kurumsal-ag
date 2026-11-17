@@ -1,0 +1,16 @@
+<section id="kurallar" class="alt">
+<h2>s1’e yazılan iki kural</h2>
+<div style="display:flex; flex-direction:column; gap:28px">
+<div class="rulerow"><div class="rulename"><p class="n">Gidiş kuralı</p><p class="k">öncelik 40000</p></div>
+<div class="code"><p>tcp, in_port=1, nw_src=10.1.1.11, nw_dst=<span class="a">10.0.1.100</span>, tp_dst=80</p><p>actions = mod_dl_dst:<span class="a">web2-MAC</span>, mod_nw_dst:<span class="a">10.0.1.12</span>, output:3</p></div></div>
+<div class="rulerow"><div class="rulename"><p class="n">Dönüş kuralı</p><p class="k">öncelik 40000</p></div>
+<div class="code"><p>tcp, in_port=3, nw_src=10.0.1.12, nw_dst=10.1.1.11, tp_src=80</p><p>actions = mod_dl_src:<span class="a">02:00:00:00:01:00</span>, mod_nw_src:<span class="a">10.0.1.100</span>, output:1</p></div></div>
+</div>
+<div class="cols2">
+<div class="col"><h3>Öncelik 40000 &gt; 32768</h3><p>Normal kurallarla eşit öncelikte switch hangisini uygulayacağını garanti etmiyor. Testte cevap sanal adrese çevrilmeden gitti.</p></div>
+<div class="col"><h3>Bağlantı 120 sn hatırlanır</h3><p>Bir bağlantı ortasında sunucu değişirse kopar. POX hangi bağlantıyı hangi sunucuya verdiğini hatırlıyor.</p></div>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Bunlar s1’in kural tablosundan sadeleştirilmiş iki kural; ovs-ofctl dump-flows ile görebiliyoruz. s1’de port 1 router’a, port 2, 3 ve 4 web1, web2 ve web3’e bağlı. Gidiş kuralı: router’dan gelen ve hedefi 10.0.1.100 olan paketin hedef MAC ve IP’sini web2’ninkiyle değiştir, port 3’ten çıkar. Dönüş kuralı: web2’den gelen cevabın kaynağını sanal MAC ve sanal IP yap, port 1’den çıkar. İki ayrıntı testte gerçekten sorun çıkardı. Birincisi öncelik: eşit öncelikte switch normal kuralı seçebiliyor ve cevap çevrilmeden gidiyordu, 40000 öncelik verdik. İkincisi bağlantı hafızası: aynı bağlantının ikinci paketi bazen kural yazılmadan POX’a ulaşıyor ve POX yeni bağlantı sanıp başka sunucu seçiyordu. 120 saniyelik hafızayla çözdük.</aside>
+</section>

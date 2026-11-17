@@ -1,0 +1,11 @@
+<section id="ozet">
+<h2>Ne yaptık?</h2>
+<div class="cols" style="flex:1">
+<div class="col rise" style="--i:0"><h3>Kurumsal ağ</h3><p>Merkez ofis ve iki şube. 4 SDN switch, 3 router, 3 web sunucusu ve 6 kullanıcı. Şubeler merkeze yavaş WAN hatlarıyla bağlı.</p><p class="mono">kurumsal_ag.py</p></div>
+<div class="col rise" style="--i:1"><h3>Yük dengeleme</h3><p>Kullanıcılar tek bir sanal adrese bağlanıyor. POX her yeni bağlantıyı sırayla üç sunucudan birine veriyor.</p><p class="mono">ders5.py</p></div>
+<div class="col rise" style="--i:2"><h3>Anomali tespiti</h3><p>SYN flood ve port taramasını sayarak yakalıyor, saldırganın paketlerini switch’te düşürüyor.</p><p class="mono">ders6.py</p></div>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Projeyi üç parçada özetleyebilirim. Birincisi ağın kendisi: merkez ve iki şubesi olan bir kurumsal ağı Mininet’te kurduk. İkincisi yük dengeleme: kullanıcılar tek bir adrese gidiyor, arkada üç sunucu sırayla cevap veriyor. Üçüncüsü anomali tespiti: SYN flood ve port taraması gibi saldırıları yakalayıp saldırganı engelliyoruz. Her parçanın kodu ayrı bir dosyada, ve her biri bir öncekinin üzerine kuruldu.</aside>
+</section>

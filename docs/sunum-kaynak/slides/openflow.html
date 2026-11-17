@@ -1,0 +1,12 @@
+<section id="openflow" class="alt">
+<h2>OpenFlow: üç mesaj yeterli</h2>
+<p class="lede">Switch’in içinde bir kural tablosu var. Her kural “şu özelliklere uyan pakete şunu yap” der. Tabloda uyan kural yoksa switch denetleyiciye sorar.</p>
+<div class="cols" style="flex:1">
+<div class="col blue rise" style="--i:0"><p class="label">Switch → POX</p><h3>packet-in</h3><p>“Bu paket için kuralım yok, ne yapayım?”</p></div>
+<div class="col blue rise" style="--i:1"><p class="label">POX → switch</p><h3>flow-mod</h3><p>“Tablona şu kuralı yaz.” Sonraki benzer paketler POX’a sorulmadan işlenir.</p></div>
+<div class="col blue rise" style="--i:2"><p class="label">POX → switch</p><h3>packet-out</h3><p>“Kural yazma, sadece bu tek paketi şu porttan gönder.”</p></div>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Denetleyici ile switch OpenFlow protokolüyle konuşuyor. Bizim kullandığımız sürüm 1.0, çünkü POX bunu destekliyor. Bilmemiz gereken üç mesaj var. packet-in: switch’te uyan kural yoksa paketi denetleyiciye sorar. flow-mod: denetleyici switch’e kalıcı bir kural yazar; sonraki benzer paketler artık denetleyiciye gitmeden işlenir. packet-out: denetleyici tek bir paketi, örneğin kendi ürettiği bir ARP cevabını, bir porttan göndertir. Kuralların bir de ömrü var: belli bir süre kullanılmazsa kendiliğinden silinirler.</aside>
+</section>

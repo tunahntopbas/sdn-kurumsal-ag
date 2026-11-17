@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SDN Kurumsal Ağ Sunumu</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..700&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+*{margin:0} html,body{height:100%;background:#0E1013;overflow:hidden}
+body{font:32px/1.2 sans-serif}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:0 0;counter-reset:page}
+#stage>section{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden;box-sizing:border-box;visibility:hidden;isolation:isolate}
+#stage>section.on{visibility:visible}
+h1{font-size:96px;font-weight:600} h2{font-size:64px;font-weight:600} h3{font-size:44px;font-weight:600}
+x-shape,x-icon{display:block} x-connector{display:none} aside{display:none}
+iframe{border:0;background:transparent}
+#notes{position:fixed;left:0;right:0;bottom:0;max-height:34vh;overflow:auto;background:rgba(14,16,19,.94);color:#E8EAEE;font:16px/1.5 -apple-system,Helvetica,Arial,sans-serif;padding:16px 24px;display:none;z-index:9}
+#notes.show{display:block}
+#hint{position:fixed;right:12px;bottom:10px;color:#868D99;font:12px -apple-system,Helvetica,Arial,sans-serif;z-index:8}
+@media print{html,body{overflow:visible;background:#fff} #stage{position:static;transform:none!important} #stage>section{position:relative;visibility:visible;page-break-after:always} #notes,#hint{display:none!important}}
+@page{size:1920px 1080px;margin:0}
+/* Renk: mürekkep #14171C, kâğıt #F7F8FA, ikinci zemin #EDF0F4, SDN mavisi #1F4FD1, saldırı kırmızısı #C4302B.
+   Yazı ölçeği: 96 / 64 / 40 / 30 / 24. */
+section {
+  background: #F7F8FA;
+  color: #14171C;
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 30px;
+  line-height: 1.4;
+  padding: 128px 128px 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  box-sizing: border-box;
+  counter-increment: page;
+}
+section.alt { background: #EDF0F4; }
+section.accent { background: #1F4FD1; color: #F7F8FA; }
+section.cover { padding: 128px; justify-content: space-between; gap: 0; }
+
+h1, h2, h3 { font-family: 'Archivo', Arial, sans-serif; color: #14171C; }
+h1 { font-size: 96px; font-weight: 700; line-height: 1.05; letter-spacing: -2px; }
+h2 { font-size: 64px; font-weight: 600; line-height: 1.1; letter-spacing: -1px; }
+h3 { font-size: 40px; font-weight: 600; line-height: 1.15; }
+p { font-size: 30px; }
+section.accent h1, section.accent h2 { color: #F7F8FA; }
+
+.lede { font-size: 30px; color: #4E5562; max-width: 1340px; }
+section.accent .lede { color: #D6E0FF; }
+.small { font-size: 24px; color: #4E5562; }
+.label { font-family: 'Archivo', Arial, sans-serif; font-size: 24px; font-weight: 600; color: #5E6573; }
+.mono { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; }
+
+.foot { position: absolute; left: 128px; bottom: 64px; width: 1100px; font-family: 'Archivo', Arial, sans-serif; font-size: 24px; color: #5E6573; }
+.pg { position: absolute; left: 1592px; bottom: 64px; width: 200px; text-align: right; font-family: 'Archivo', Arial, sans-serif; font-size: 24px; color: #5E6573; }
+.pg::after { content: counter(page); }
+section.accent .foot, section.accent .pg { color: #D6E0FF; }
+
+.steptag { position: absolute; left: 1392px; top: 140px; width: 400px; text-align: right; font-family: 'Archivo', Arial, sans-serif; font-size: 24px; font-weight: 600; color: #1F4FD1; }
+.steptag.red { color: #C4302B; }
+section.step h2 { max-width: 1220px; }
+section.step .lede { color: #14171C; }
+
+/* Kapak */
+.spec { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; border-top: 2px solid #14171C; padding-top: 24px; }
+.spec div { display: flex; flex-direction: column; gap: 4px; }
+.spec .k { font-family: 'Archivo', Arial, sans-serif; font-size: 24px; color: #5E6573; }
+.spec .v { font-family: 'Archivo', Arial, sans-serif; font-size: 40px; font-weight: 600; color: #14171C; }
+
+/* Sütunlar */
+.cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 64px; }
+.cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 96px; }
+.col { display: flex; flex-direction: column; gap: 16px; border-top: 3px solid #14171C; padding-top: 24px; }
+.col p { color: #4E5562; }
+.col .mono { color: #1F4FD1; }
+.col .alert { color: #C4302B; }
+.col.red { border-top-color: #C4302B; }
+.col.blue { border-top-color: #1F4FD1; }
+.big { font-family: 'Archivo', Arial, sans-serif; font-size: 96px; font-weight: 700; line-height: 1; color: #14171C; letter-spacing: -2px; }
+
+table.tbl { font-family: 'Source Serif 4', Georgia, serif; font-size: 26px; color: #14171C; width: 100%; }
+table.tbl.s24 { font-size: 24px; }
+
+/* Kod ve kural kutuları */
+.code { background: #EDF0F4; border-radius: 4px; padding: 24px 32px; display: flex; flex-direction: column; gap: 4px; }
+section.alt .code { background: #F7F8FA; }
+.code p { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; line-height: 1.5; color: #14171C; }
+.code .c { color: #5E6573; }
+.code .a { color: #1F4FD1; }
+.code .r { color: #C4302B; }
+.rulerow { display: grid; grid-template-columns: 300px 1fr; gap: 40px; align-items: start; }
+.rulename { display: flex; flex-direction: column; gap: 4px; }
+.rulename .n { font-family: 'Archivo', Arial, sans-serif; font-size: 30px; font-weight: 600; }
+.rulename .k { font-family: 'Archivo', Arial, sans-serif; font-size: 24px; color: #5E6573; }
+
+/* Çizimler */
+.box { position: absolute; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 4px; }
+.box.plain { background: #F7F8FA; border: 2px solid #14171C; }
+.box.sdn { background: #1F4FD1; }
+.box.ctrl { background: #E6ECFB; border: 2px solid #1F4FD1; }
+.box .t { font-family: 'Archivo', Arial, sans-serif; font-size: 26px; font-weight: 600; text-align: center; color: #14171C; }
+.box.sdn .t { color: #F7F8FA; }
+.box.ctrl .t { color: #1F4FD1; }
+.box .h { font-family: 'Archivo', Arial, sans-serif; font-size: 40px; font-weight: 600; text-align: center; color: #1F4FD1; }
+.wire { color: #1F4FD1; border-width: 3px; border-style: dashed; }
+.line { color: #868D99; border-width: 3px; }
+.cap { position: absolute; font-size: 26px; color: #4E5562; text-align: center; }
+.capl { position: absolute; font-size: 26px; color: #4E5562; }
+.dhead { position: absolute; font-family: 'Archivo', Arial, sans-serif; font-size: 40px; font-weight: 600; color: #14171C; }
+.wlabel { position: absolute; font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; color: #1F4FD1; }
+
+/* Ölçüm grafiği */
+.bars { display: flex; flex-direction: column; gap: 36px; }
+.metric { display: flex; flex-direction: column; gap: 10px; }
+.metric .mt { font-family: 'Archivo', Arial, sans-serif; font-size: 30px; font-weight: 600; }
+.bar { display: grid; grid-template-columns: 180px 1fr 110px; gap: 20px; align-items: center; }
+.bar .who { font-family: 'Archivo', Arial, sans-serif; font-size: 24px; color: #4E5562; }
+.bar .num { font-family: 'Archivo', Arial, sans-serif; font-size: 30px; font-weight: 700; text-align: right; }
+.track { height: 28px; background: #E2E6EC; }
+.fill { height: 28px; background: #868D99; }
+.fill.on { background: #1F4FD1; }
+.stat { display: flex; flex-direction: column; gap: 8px; border-left: 3px solid #14171C; padding-left: 40px; }
+
+/* Hareket */
+.rise { animation: rise 600ms cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--i, 0) * 120ms); }
+@keyframes rise { from { opacity: 0; transform: translateY(24px); } }
+
+</style></head><body>
+<div id="stage">
+<section id="cover" class="cover" data-transition="fade">
+<div style="display:flex; flex-direction:column; gap:40px">
+<p class="label">BSM-451 Ağ Programlama · Proje Konusu 3</p>
+<h1 class="rise" style="max-width:1500px">SDN ile Kurumsal Ağ:<br>Yük Dengeleme ve Anomali Tespiti</h1>
+<p class="lede rise" style="--i:1">Merkez ofis ve iki şubeden oluşan sanal bir kurumsal ağ. Bütün switch’leri tek bir Python programı yönetiyor; bu program trafiği üç sunucuya dağıtıyor ve saldırganı ağın girişinde durduruyor.</p>
+</div>
+<div style="display:flex; flex-direction:column; gap:32px">
+<p class="small">Hazırlayan: [Ad Soyad · Öğrenci No]</p>
+<div class="spec">
+<div><p class="k">Ağ platformu</p><p class="v">Mininet</p></div>
+<div><p class="k">SDN denetleyici</p><p class="v">POX</p></div>
+<div><p class="k">Protokol</p><p class="v">OpenFlow 1.0</p></div>
+<div><p class="k">Dil</p><p class="v">Python 3</p></div>
+</div>
+</div>
+<aside>Merhaba. Projemiz ödevin üçüncü konusu: bir SDN ağı kurup üzerinde ağ uygulaması geliştirmek. Bir şirketin merkezini ve iki şubesini Mininet ile sanal olarak kurduk. Ağdaki switch’leri POX adlı denetleyici yönetiyor. Denetleyicinin içine iki uygulama yazdık: yük dengeleme ve anomali tespiti. Sunumda önce SDN’in ne olduğunu, sonra ağımızı, sonra iki uygulamanın nasıl çalıştığını ve ölçüm sonuçlarını anlatacağım.</aside>
+</section>
+<section id="ozet">
+<h2>Ne yaptık?</h2>
+<div class="cols" style="flex:1">
+<div class="col rise" style="--i:0"><h3>Kurumsal ağ</h3><p>Merkez ofis ve iki şube. 4 SDN switch, 3 router, 3 web sunucusu ve 6 kullanıcı. Şubeler merkeze yavaş WAN hatlarıyla bağlı.</p><p class="mono">kurumsal_ag.py</p></div>
+<div class="col rise" style="--i:1"><h3>Yük dengeleme</h3><p>Kullanıcılar tek bir sanal adrese bağlanıyor. POX her yeni bağlantıyı sırayla üç sunucudan birine veriyor.</p><p class="mono">ders5.py</p></div>
+<div class="col rise" style="--i:2"><h3>Anomali tespiti</h3><p>SYN flood ve port taramasını sayarak yakalıyor, saldırganın paketlerini switch’te düşürüyor.</p><p class="mono">ders6.py</p></div>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Projeyi üç parçada özetleyebilirim. Birincisi ağın kendisi: merkez ve iki şubesi olan bir kurumsal ağı Mininet’te kurduk. İkincisi yük dengeleme: kullanıcılar tek bir adrese gidiyor, arkada üç sunucu sırayla cevap veriyor. Üçüncüsü anomali tespiti: SYN flood ve port taraması gibi saldırıları yakalayıp saldırganı engelliyoruz. Her parçanın kodu ayrı bir dosyada, ve her biri bir öncekinin üzerine kuruldu.</aside>
+</section>
+<section id="odev" class="alt">
+<h2>Ödevin maddeleri ve karşılıkları</h2>
+<table class="tbl">
+<tr><th style="width:38%">Ödevde istenen</th><th>Projede karşılığı</th></tr>
+<tr><td>a) Platform Mininet, denetleyici Floodlight, POX veya NOX</td><td>Mininet ve POX. Switch’ler Open vSwitch, aradaki protokol OpenFlow 1.0.</td></tr>
+<tr><td>b) Merkezi ve şubeleri olan kurumsal bir ağ</td><td>Merkez ve iki şube. Her ofisin kendi router’ı ve alt ağı var, şubeler merkeze WAN hattıyla bağlı.</td></tr>
+<tr><td>c) Trafik senaryoları ve uygulama</td><td>İki uygulama: yük dengeleme ve anomali tespiti. Dört senaryo, korumalı ve korumasız olarak ölçüldü.</td></tr>
+</table>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Ödevin üçüncü konusu üç şey istiyordu. Platform olarak Mininet ve denetleyici olarak POX kullandık. Kurumsal ağ olarak bir merkez ve iki şube modelledik. Uygulama olarak yük dengeleme ve anomali tespiti yazdık, bunları dört farklı trafik senaryosunda ölçtük: normal trafik, SYN flood ve iki çeşit port taraması.</aside>
+</section>
+<section id="sdn">
+<h2>SDN: kararı switch’ten almak</h2>
+<div style="display:flex; gap:144px">
+<!-- Sol: kutular 0,340,200,90 / 280,340,200,90 / 560,340,200,90 -->
+<div style="position:relative; width:760px; height:560px">
+<p class="dhead" style="left:0; top:0; width:760px">Geleneksel ağ</p>
+<p class="capl" style="left:0; top:72px; width:740px">Her switch hem karar verir hem paketi taşır. Davranışı değiştirmek için cihazlar tek tek ayarlanır.</p>
+<div class="box plain" style="left:0; top:340px; width:200px; height:90px"><p class="t">karar + iletim</p></div>
+<div class="box plain" style="left:280px; top:340px; width:200px; height:90px"><p class="t">karar + iletim</p></div>
+<div class="box plain" style="left:560px; top:340px; width:200px; height:90px"><p class="t">karar + iletim</p></div>
+<x-connector class="line" x1="200" y1="385" x2="280" y2="385" head="none"></x-connector>
+<x-connector class="line" x1="480" y1="385" x2="560" y2="385" head="none"></x-connector>
+</div>
+<!-- Sağ: denetleyici 180,170,400,90; switchler 0/280/560,340,200,90; bara y=300 -->
+<div style="position:relative; width:760px; height:560px">
+<p class="dhead" style="left:0; top:0; width:760px; color:#1F4FD1">SDN</p>
+<p class="capl" style="left:0; top:72px; width:740px">Karar tek bir denetleyicide. Switch’ler sadece yazılan kuralı uygular.</p>
+<div class="box ctrl" style="left:180px; top:170px; width:400px; height:90px"><p class="t">Denetleyici: karar</p></div>
+<div class="box sdn" style="left:0; top:340px; width:200px; height:90px"><p class="t">iletim</p></div>
+<div class="box sdn" style="left:280px; top:340px; width:200px; height:90px"><p class="t">iletim</p></div>
+<div class="box sdn" style="left:560px; top:340px; width:200px; height:90px"><p class="t">iletim</p></div>
+<x-connector class="wire" x1="380" y1="260" x2="380" y2="300" head="none"></x-connector>
+<x-connector class="wire" x1="100" y1="300" x2="660" y2="300" head="none"></x-connector>
+<x-connector class="wire" x1="100" y1="300" x2="100" y2="340"></x-connector>
+<x-connector class="wire" x1="380" y1="300" x2="380" y2="340"></x-connector>
+<x-connector class="wire" x1="660" y1="300" x2="660" y2="340"></x-connector>
+</div>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Bir ağda iki iş var: karar vermek, yani bu paket nereye gitmeli, ve paketi taşımak. Geleneksel ağda her switch ikisini birlikte yapar, içinde kendi küçük beyni vardır. SDN’de, yani yazılım tanımlı ağda, karar verme işi switch’lerden alınıp tek bir programa, denetleyiciye verilir. Switch’ler sadece denetleyicinin yazdığı kuralları uygular. Benzetmeyle: geleneksel ağda her kavşakta kendi kafasına göre karar veren bir trafik polisi var; SDN’de kavşaklarda sadece ışıklar var ve hepsini tek bir kontrol odası yönetiyor. Bu sayede ağın davranışını cihazlara dokunmadan, Python kodu yazarak değiştirebiliyoruz.</aside>
+</section>
+<section id="openflow" class="alt">
+<h2>OpenFlow: üç mesaj yeterli</h2>
+<p class="lede">Switch’in içinde bir kural tablosu var. Her kural “şu özelliklere uyan pakete şunu yap” der. Tabloda uyan kural yoksa switch denetleyiciye sorar.</p>
+<div class="cols" style="flex:1">
+<div class="col blue rise" style="--i:0"><p class="label">Switch → POX</p><h3>packet-in</h3><p>“Bu paket için kuralım yok, ne yapayım?”</p></div>
+<div class="col blue rise" style="--i:1"><p class="label">POX → switch</p><h3>flow-mod</h3><p>“Tablona şu kuralı yaz.” Sonraki benzer paketler POX’a sorulmadan işlenir.</p></div>
+<div class="col blue rise" style="--i:2"><p class="label">POX → switch</p><h3>packet-out</h3><p>“Kural yazma, sadece bu tek paketi şu porttan gönder.”</p></div>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Denetleyici ile switch OpenFlow protokolüyle konuşuyor. Bizim kullandığımız sürüm 1.0, çünkü POX bunu destekliyor. Bilmemiz gereken üç mesaj var. packet-in: switch’te uyan kural yoksa paketi denetleyiciye sorar. flow-mod: denetleyici switch’e kalıcı bir kural yazar; sonraki benzer paketler artık denetleyiciye gitmeden işlenir. packet-out: denetleyici tek bir paketi, örneğin kendi ürettiği bir ARP cevabını, bir porttan göndertir. Kuralların bir de ömrü var: belli bir süre kullanılmazsa kendiliğinden silinirler.</aside>
+</section>
+<section id="topoloji" data-section="Kurumsal ağın topolojisi, adres planı, kontrol katmanı ve araçlar.">
+<h2>Ağın haritası</h2>
+<iframe style="position:absolute; left:128px; top:236px; width:1664px; height:624px" srcdoc="&lt;!doctype html&gt;&lt;meta charset=&#x27;utf-8&#x27;&gt;&lt;style&gt;html,body{margin:0;height:100%;background:transparent}svg{display:block;width:100%;height:100%;font-family:-apple-system,&quot;Helvetica Neue&quot;,Arial,sans-serif}&lt;/style&gt;&lt;svg id=&quot;s&quot; viewBox=&quot;0 0 960 470&quot;&gt;&lt;/svg&gt;&lt;script&gt;
+var H={e:[],r:[],g:[],n:[],b:null,x:null,f:18};
+var C={i:&quot;#14171C&quot;,m:&quot;#868D99&quot;,d:&quot;#5E6573&quot;,a:&quot;#1F4FD1&quot;,r:&quot;#C4302B&quot;,g:&quot;#1C7A4E&quot;,p:&quot;#F7F8FA&quot;,l:&quot;#D8DCE2&quot;};
+var N={r2:[150,95,&quot;r&quot;],r1:[480,95,&quot;r&quot;],r3:[810,95,&quot;r&quot;],s3:[150,205,&quot;s&quot;],s1:[370,205,&quot;s&quot;],s2:[590,205,&quot;s&quot;],s4:[810,205,&quot;s&quot;],b1h1:[100,318,&quot;p&quot;,&quot;.11&quot;],b1h2:[200,318,&quot;p&quot;,&quot;.12&quot;],web1:[300,318,&quot;v&quot;,&quot;.11&quot;],web2:[370,318,&quot;v&quot;,&quot;.12&quot;],web3:[440,318,&quot;v&quot;,&quot;.13&quot;],pc1:[550,318,&quot;p&quot;,&quot;.11&quot;],pc2:[630,318,&quot;p&quot;,&quot;.12&quot;],b2h1:[760,318,&quot;p&quot;,&quot;.11&quot;],b2h2:[860,318,&quot;p&quot;,&quot;.12&quot;]};
+var E=[[&quot;r2&quot;,&quot;r1&quot;],[&quot;r1&quot;,&quot;r3&quot;],[&quot;r2&quot;,&quot;s3&quot;],[&quot;r3&quot;,&quot;s4&quot;],[&quot;r1&quot;,&quot;s1&quot;],[&quot;r1&quot;,&quot;s2&quot;],[&quot;s3&quot;,&quot;b1h1&quot;],[&quot;s3&quot;,&quot;b1h2&quot;],[&quot;s1&quot;,&quot;web1&quot;],[&quot;s1&quot;,&quot;web2&quot;],[&quot;s1&quot;,&quot;web3&quot;],[&quot;s2&quot;,&quot;pc1&quot;],[&quot;s2&quot;,&quot;pc2&quot;],[&quot;s4&quot;,&quot;b2h1&quot;],[&quot;s4&quot;,&quot;b2h2&quot;]];
+var F=H.f,D=H.e.length+H.r.length+H.g.length&gt;0,o=&quot;&quot;;
+function has(L,a,b){return L.indexOf(a+&quot;-&quot;+b)&gt;=0||L.indexOf(b+&quot;-&quot;+a)&gt;=0}
+function T(x,y,t,c,an,w,mono){return &#x27;&lt;text x=&quot;&#x27;+x+&#x27;&quot; y=&quot;&#x27;+y+&#x27;&quot; fill=&quot;&#x27;+c+&#x27;&quot; text-anchor=&quot;&#x27;+(an||&quot;middle&quot;)+&#x27;&quot; font-size=&quot;&#x27;+F+&#x27;&quot; font-weight=&quot;&#x27;+(w||400)+&#x27;&quot;&#x27;+(mono?&#x27; font-family=&quot;Menlo,Consolas,monospace&quot;&#x27;:&#x27;&#x27;)+&#x27;&gt;&#x27;+t+&#x27;&lt;/text&gt;&#x27;}
+function P(a,b){var A=N[a],B=N[b];if(A[2]==&quot;r&quot;&amp;&amp;B[2]==&quot;r&quot;||B[2]==&quot;s&quot;&amp;&amp;a!=&quot;r1&quot;)return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+B[0]+&quot;,&quot;+B[1];if(a==&quot;r1&quot;)return &quot;M480,95L480,148L&quot;+B[0]+&quot;,148L&quot;+B[0]+&quot;,&quot;+B[1];return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+A[0]+&quot;,268L&quot;+B[0]+&quot;,268L&quot;+B[0]+&quot;,&quot;+B[1]}
+[[40,24,220,436,&quot;ŞUBE 1&quot;,&quot;10.1.1.0/24&quot;,150],[280,24,400,436,&quot;MERKEZ&quot;],[700,24,220,436,&quot;ŞUBE 2&quot;,&quot;10.2.1.0/24&quot;,810]].forEach(function(z){o+=&#x27;&lt;rect x=&quot;&#x27;+z[0]+&#x27;&quot; y=&quot;&#x27;+z[1]+&#x27;&quot; width=&quot;&#x27;+z[2]+&#x27;&quot; height=&quot;&#x27;+z[3]+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.l+&#x27;&quot; stroke-width=&quot;1.5&quot;/&gt;&#x27;+T(z[0]+12,z[1]+26,z[4],C.m,&quot;start&quot;,700);if(z[5])o+=T(z[6],450,z[5],C.d,0,0,1)});
+o+=T(370,450,&quot;10.0.1.0/24&quot;,C.d,0,0,1)+T(590,450,&quot;10.0.2.0/24&quot;,C.d,0,0,1)+T(315,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d)+T(645,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d);
+E.forEach(function(e){var a=e[0],b=e[1],w=N[a][2]==&quot;r&quot;&amp;&amp;N[b][2]==&quot;r&quot;,c=C.m,sw=w?3:1.6,da=&quot;&quot;,op=1;if(has(H.r,a,b)){c=C.r;sw=w?4:3.5;da=&#x27; stroke-dasharray=&quot;7 5&quot;&#x27;}else if(has(H.g,a,b)){c=C.g;sw=w?4:3.5}else if(has(H.e,a,b)){c=C.a;sw=w?4:3.5}else{if(w)c=C.i;if(D)op=.2}o+=&#x27;&lt;path d=&quot;&#x27;+P(a,b)+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+c+&#x27;&quot; stroke-width=&quot;&#x27;+sw+&#x27;&quot; stroke-linejoin=&quot;round&quot; opacity=&quot;&#x27;+op+&#x27;&quot;&#x27;+da+&#x27;/&gt;&#x27;});
+o+=&#x27;&lt;path d=&quot;M286,388L286,396L454,396L454,388&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.a+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(370,420,&quot;VIP 10.0.1.100&quot;,C.a,0,600,1);
+for(var k in N){var n=N[k],x=n[0],y=n[1],g=&#x27;&lt;g opacity=&quot;&#x27;+((!D||H.n.indexOf(k)&gt;=0)?1:.3)+&#x27;&quot;&gt;&#x27;;if(n[2]==&quot;r&quot;)g+=&#x27;&lt;circle cx=&quot;&#x27;+x+&#x27;&quot; cy=&quot;&#x27;+y+&#x27;&quot; r=&quot;24&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;2&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.i,0,700);else if(n[2]==&quot;s&quot;)g+=&#x27;&lt;rect x=&quot;&#x27;+(x-36)+&#x27;&quot; y=&quot;&#x27;+(y-16)+&#x27;&quot; width=&quot;72&quot; height=&quot;32&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.a+&#x27;&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.p,0,700);else{if(n[2]==&quot;v&quot;){g+=&#x27;&lt;rect x=&quot;&#x27;+(x-13)+&#x27;&quot; y=&quot;&#x27;+(y-18)+&#x27;&quot; width=&quot;26&quot; height=&quot;36&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;[-8,-1,6].forEach(function(d){g+=&#x27;&lt;line x1=&quot;&#x27;+(x-7)+&#x27;&quot; x2=&quot;&#x27;+(x+7)+&#x27;&quot; y1=&quot;&#x27;+(y+d)+&#x27;&quot; y2=&quot;&#x27;+(y+d)+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.4&quot;/&gt;&#x27;})}else g+=&#x27;&lt;rect x=&quot;&#x27;+(x-17)+&#x27;&quot; y=&quot;&#x27;+(y-14)+&#x27;&quot; width=&quot;34&quot; height=&quot;23&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;path d=&quot;M&#x27;+(x-8)+&#x27;,&#x27;+(y+15)+&#x27;h16M&#x27;+x+&#x27;,&#x27;+(y+9)+&#x27;v6&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;g+=T(x,y+40,k,C.i,0,600)+T(x,y+40+F,n[3],C.d,0,0,1)}o+=g+&#x27;&lt;/g&gt;&#x27;}
+if(H.x){var q=N[H.x];o+=&#x27;&lt;rect x=&quot;&#x27;+(q[0]-44)+&#x27;&quot; y=&quot;&#x27;+(q[1]-24)+&#x27;&quot; width=&quot;88&quot; height=&quot;48&quot; rx=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.r+&#x27;&quot; stroke-width=&quot;2.5&quot;/&gt;&#x27;}
+if(H.b){var m=N[H.b[0]],bc=H.b[2]==&quot;r&quot;?C.r:C.a,bw=H.b[1].length*F*.6+24,bx=m[0]+52;o+=&#x27;&lt;line x1=&quot;&#x27;+(m[0]+36)+&#x27;&quot; x2=&quot;&#x27;+bx+&#x27;&quot; y1=&quot;&#x27;+m[1]+&#x27;&quot; y2=&quot;&#x27;+m[1]+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;rect x=&quot;&#x27;+bx+&#x27;&quot; y=&quot;&#x27;+(m[1]-F*.85)+&#x27;&quot; width=&quot;&#x27;+bw+&#x27;&quot; height=&quot;&#x27;+F*1.7+&#x27;&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(bx+bw/2,m[1]+F*.35,H.b[1],bc,0,700)}
+document.getElementById(&quot;s&quot;).innerHTML=o;
+&lt;/script&gt;" frameborder="0" scrolling="no"></iframe>
+<p class="small" style="position:absolute; left:128px; top:872px; width:1664px">Mavi kutular POX’un yönettiği SDN switch’leri, daireler Linux router’lar. İnce çizgi 100 Mbit/s ve 1 ms, kalın çizgi 10 Mbit/s ve 20 ms.</p>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Ağımız gerçek bir şirket gibi üç ofisten oluşuyor. Ortada merkez: solda şirketin üç web sunucusu s1 switch’ine, sağda iki çalışan bilgisayarı s2’ye bağlı. Solda Şube 1, sağda Şube 2; her birinde iki kullanıcı var. Her ofisin dışarıya açılan kapısı bir router: r1, r2, r3. Mavi kutular SDN switch’leri, hepsini POX yönetiyor. Kalın çizgiler şubeleri merkeze bağlayan WAN hatları; ofis içinden on kat yavaş ve 20 ms gecikmeli, gerçek bir şehirler arası hat gibi. Sunucuların altındaki VIP, yani 10.0.1.100, kullanıcıların bildiği tek adres; buna yük dengelemede döneceğim. Topolojiyi ping ile doğruladık: şubeden merkeze TTL 62, şubeden şubeye 61 görülüyor, yani paket beklenen sayıda router’dan geçiyor.</aside>
+</section>
+<section id="adresler" class="alt">
+<h2>Adres planı</h2>
+<table class="tbl">
+<tr><th style="width:24%">Ağ</th><th style="width:19%">Adres bloğu</th><th style="width:18%">Kapı</th><th style="width:10%">Switch</th><th>Cihazlar</th></tr>
+<tr><td>Merkez, sunucular</td><td>10.0.1.0/24</td><td>10.0.1.1 · r1</td><td>s1</td><td>web1 .11 · web2 .12 · web3 .13 · VIP .100</td></tr>
+<tr><td>Merkez, kullanıcılar</td><td>10.0.2.0/24</td><td>10.0.2.1 · r1</td><td>s2</td><td>pc1 .11 · pc2 .12</td></tr>
+<tr><td>Şube 1</td><td>10.1.1.0/24</td><td>10.1.1.1 · r2</td><td>s3</td><td>b1h1 .11 · b1h2 .12</td></tr>
+<tr><td>Şube 2</td><td>10.2.1.0/24</td><td>10.2.1.1 · r3</td><td>s4</td><td>b2h1 .11 · b2h2 .12</td></tr>
+<tr><td>WAN hatları</td><td>10.255.1.0/30<br>10.255.2.0/30</td><td>–</td><td>–</td><td>r1 ile r2, r1 ile r3 (yıldız yapı)</td></tr>
+</table>
+<p class="small">Doğrulama: her router TTL’yi 1 azaltır. Şubeden merkeze ping’te ttl=62, şubeden şubeye ttl=61 görüldü.</p>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Her ağın kendi /24 bloğu var ve kapısı, yani gateway’i, o ofisin router’ı. WAN hatları /30, çünkü bir hatta sadece iki router var. Yapı yıldız şeklinde: bütün şubeler merkezdeki r1’e bağlı, şubeden şubeye trafik de r1 üzerinden geçiyor. Ağda döngü yok; döngülü bir ağda yayın paketleri sonsuza kadar dolaşırdı. Router’lar normal Linux router; SDN switch katmanında çalışıyor. Gerçek kurumlarda da OpenFlow çoğunlukla switch ve veri merkezi katmanında kullanılıyor.</aside>
+</section>
+<section id="kontrol">
+<h2>Kontrol katmanı: tek beyin, dört switch</h2>
+<!-- POX 432,0,800,150 · bara y=300 · switchler 88/504/920/1336,420,240,80 (merkezler 208/624/1040/1456) -->
+<div style="position:relative; width:1664px; height:600px">
+<div class="box ctrl" style="left:432px; top:0; width:800px; height:150px"><p class="h">POX denetleyicisi</p><p class="t" style="color:#4E5562; font-weight:400">öğrenen switch · yük dengeleme · anomali tespiti</p></div>
+<div class="box sdn" style="left:88px; top:420px; width:240px; height:80px"><p class="t">s3</p></div>
+<div class="box sdn" style="left:504px; top:420px; width:240px; height:80px"><p class="t">s1</p></div>
+<div class="box sdn" style="left:920px; top:420px; width:240px; height:80px"><p class="t">s2</p></div>
+<div class="box sdn" style="left:1336px; top:420px; width:240px; height:80px"><p class="t">s4</p></div>
+<x-connector class="wire" x1="832" y1="150" x2="832" y2="300" head="none"></x-connector>
+<x-connector class="wire" x1="208" y1="300" x2="1456" y2="300" head="none"></x-connector>
+<x-connector class="wire" x1="208" y1="300" x2="208" y2="420"></x-connector>
+<x-connector class="wire" x1="624" y1="300" x2="624" y2="420"></x-connector>
+<x-connector class="wire" x1="1040" y1="300" x2="1040" y2="420"></x-connector>
+<x-connector class="wire" x1="1456" y1="300" x2="1456" y2="420"></x-connector>
+<p class="wlabel" style="left:856px; top:196px; width:400px">↑ packet-in</p>
+<p class="wlabel" style="left:400px; top:196px; width:408px; text-align:right">flow-mod · packet-out ↓</p>
+<p class="cap" style="left:48px; top:520px; width:320px">şube 1</p>
+<p class="cap" style="left:464px; top:520px; width:320px">sunucu ağı</p>
+<p class="cap" style="left:880px; top:520px; width:320px">merkez kullanıcı</p>
+<p class="cap" style="left:1296px; top:520px; width:320px">şube 2</p>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Haritada denetleyiciyi göstermedim, çünkü veri ağının parçası değil. POX her switch’e ayrı bir kontrol bağlantısıyla, 6633 portu üzerinden bağlı. Üç uygulamamız aynı POX programının içinde çalışıyor ve dört switch’i birlikte yönetiyor: öğrenen switch adresleri öğrenip normal trafiği yönlendiriyor, yük dengeleme sanal adrese gelen trafiği dağıtıyor, anomali tespiti saldırıları sayıyor. Switch’ten POX’a packet-in gidiyor, POX’tan switch’e flow-mod ve packet-out geliyor.</aside>
+</section>
+<section id="araclar" class="alt">
+<h2>Kullandığımız araçlar</h2>
+<table class="tbl">
+<tr><th style="width:24%">Araç</th><th style="width:46%">Ne işe yarar</th><th>Projede nerede</th></tr>
+<tr><td>Mininet</td><td>Tek bilgisayarda sanal ağ kurar</td><td>kurumsal_ag.py</td></tr>
+<tr><td>Open vSwitch</td><td>Kural uygulayan sanal switch</td><td>s1, s2, s3, s4</td></tr>
+<tr><td>POX</td><td>Python ile yazılmış SDN denetleyicisi</td><td>ders4, ders5, ders6</td></tr>
+<tr><td>OpenFlow 1.0</td><td>Denetleyici ile switch arasındaki protokol</td><td>packet-in, flow-mod</td></tr>
+<tr><td>Linux router, netem</td><td>Ağlar arası yönlendirme, hat hızı ve gecikmesi</td><td>r1, r2, r3 · WAN 20 ms</td></tr>
+<tr><td>curl, hping3, nmap</td><td>Normal trafik, SYN flood, port taraması</td><td>senaryo.py</td></tr>
+</table>
+<p class="small">Mininet sadece Linux’ta çalıştığı için proje, Mac üzerinde Multipass ile açılan bir Ubuntu 24.04 sanal makinesinde çalışıyor.</p>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Hepsi açık kaynak araçlar. Mininet tek bir bilgisayarın içinde sanal bilgisayarlar, switch’ler ve kablolar kuruyor; her sanal bilgisayar gerçek Linux komutları çalıştırabiliyor. Open vSwitch OpenFlow konuşan sanal switch, veri merkezlerinde de kullanılıyor. POX Python ile yazılmış denetleyici; uygulamalarımızı onun modülü olarak yazdık. Router’lar IP yönlendirmesi açılmış normal Linux makineleri; hat hızlarını ve gecikmeleri Linux’un netem aracıyla verdik. Trafik üretmek için curl, saldırı için hping3 ve nmap kullandık. Switch tablolarını ovs-ofctl ile okuyarak ölçtük.</aside>
+</section>
+<section id="vip" class="accent" data-transition="fade">
+<p class="label" style="color:#D6E0FF">Uygulama 1 · Yük dengeleme</p>
+<h1 class="rise" style="max-width:1500px">Üç sunucu, tek adres:<br>10.0.1.100</h1>
+<p class="lede rise" style="--i:1">Kullanıcılar sunucuları tek tek bilmez. Hepsi sanal adrese gider. POX her yeni bağlantıyı sırayla bir sunucuya verir: web1, web2, web3, sonra yine web1. Bu sıralı dağıtmanın adı round robin.</p>
+<p class="lede rise" style="--i:2">Benzetme: bir şirketin tek bir müşteri hizmetleri numarası vardır ama arkada üç temsilci telefonları sırayla açar.</p>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Birinci uygulamamız yük dengeleme. Kullanıcılar üç sunucunun adresini bilmiyor; hepsi tek bir adrese, 10.0.1.100’e gidiyor. Bu adres hiçbir makinenin gerçek adresi değil, sanal bir adres, kısaca VIP. POX bu adrese gelen her yeni bağlantıyı sırayla bir sunucuya veriyor. Telefon santrali gibi düşünebilirsiniz: arayan tek numarayı arar, kimin açtığını bilmez. Şimdi bir isteğin yolculuğunu dört adımda göstereceğim.</aside>
+</section>
+<section id="lb1" class="step" data-transition="fade">
+<p class="steptag">Yük dengeleme · 1 / 4</p>
+<h2>İstek merkeze ulaşıyor</h2>
+<p class="lede">Şube 1’deki b1h1 şirketin web sitesini, yani 10.0.1.100’ü açıyor. Paket şube router’ı r2’ye, oradan 20 ms gecikmeli WAN hattıyla merkezdeki r1’e gidiyor.</p>
+<iframe style="position:absolute; left:128px; top:340px; width:1664px; height:580px" srcdoc="&lt;!doctype html&gt;&lt;meta charset=&#x27;utf-8&#x27;&gt;&lt;style&gt;html,body{margin:0;height:100%;background:transparent}svg{display:block;width:100%;height:100%;font-family:-apple-system,&quot;Helvetica Neue&quot;,Arial,sans-serif}&lt;/style&gt;&lt;svg id=&quot;s&quot; viewBox=&quot;0 0 960 470&quot;&gt;&lt;/svg&gt;&lt;script&gt;
+var H={e:[&quot;b1h1-s3&quot;,&quot;r2-s3&quot;,&quot;r2-r1&quot;],r:[],g:[],n:[&quot;b1h1&quot;,&quot;s3&quot;,&quot;r2&quot;,&quot;r1&quot;],b:null,x:null,f:20};
+var C={i:&quot;#14171C&quot;,m:&quot;#868D99&quot;,d:&quot;#5E6573&quot;,a:&quot;#1F4FD1&quot;,r:&quot;#C4302B&quot;,g:&quot;#1C7A4E&quot;,p:&quot;#F7F8FA&quot;,l:&quot;#D8DCE2&quot;};
+var N={r2:[150,95,&quot;r&quot;],r1:[480,95,&quot;r&quot;],r3:[810,95,&quot;r&quot;],s3:[150,205,&quot;s&quot;],s1:[370,205,&quot;s&quot;],s2:[590,205,&quot;s&quot;],s4:[810,205,&quot;s&quot;],b1h1:[100,318,&quot;p&quot;,&quot;.11&quot;],b1h2:[200,318,&quot;p&quot;,&quot;.12&quot;],web1:[300,318,&quot;v&quot;,&quot;.11&quot;],web2:[370,318,&quot;v&quot;,&quot;.12&quot;],web3:[440,318,&quot;v&quot;,&quot;.13&quot;],pc1:[550,318,&quot;p&quot;,&quot;.11&quot;],pc2:[630,318,&quot;p&quot;,&quot;.12&quot;],b2h1:[760,318,&quot;p&quot;,&quot;.11&quot;],b2h2:[860,318,&quot;p&quot;,&quot;.12&quot;]};
+var E=[[&quot;r2&quot;,&quot;r1&quot;],[&quot;r1&quot;,&quot;r3&quot;],[&quot;r2&quot;,&quot;s3&quot;],[&quot;r3&quot;,&quot;s4&quot;],[&quot;r1&quot;,&quot;s1&quot;],[&quot;r1&quot;,&quot;s2&quot;],[&quot;s3&quot;,&quot;b1h1&quot;],[&quot;s3&quot;,&quot;b1h2&quot;],[&quot;s1&quot;,&quot;web1&quot;],[&quot;s1&quot;,&quot;web2&quot;],[&quot;s1&quot;,&quot;web3&quot;],[&quot;s2&quot;,&quot;pc1&quot;],[&quot;s2&quot;,&quot;pc2&quot;],[&quot;s4&quot;,&quot;b2h1&quot;],[&quot;s4&quot;,&quot;b2h2&quot;]];
+var F=H.f,D=H.e.length+H.r.length+H.g.length&gt;0,o=&quot;&quot;;
+function has(L,a,b){return L.indexOf(a+&quot;-&quot;+b)&gt;=0||L.indexOf(b+&quot;-&quot;+a)&gt;=0}
+function T(x,y,t,c,an,w,mono){return &#x27;&lt;text x=&quot;&#x27;+x+&#x27;&quot; y=&quot;&#x27;+y+&#x27;&quot; fill=&quot;&#x27;+c+&#x27;&quot; text-anchor=&quot;&#x27;+(an||&quot;middle&quot;)+&#x27;&quot; font-size=&quot;&#x27;+F+&#x27;&quot; font-weight=&quot;&#x27;+(w||400)+&#x27;&quot;&#x27;+(mono?&#x27; font-family=&quot;Menlo,Consolas,monospace&quot;&#x27;:&#x27;&#x27;)+&#x27;&gt;&#x27;+t+&#x27;&lt;/text&gt;&#x27;}
+function P(a,b){var A=N[a],B=N[b];if(A[2]==&quot;r&quot;&amp;&amp;B[2]==&quot;r&quot;||B[2]==&quot;s&quot;&amp;&amp;a!=&quot;r1&quot;)return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+B[0]+&quot;,&quot;+B[1];if(a==&quot;r1&quot;)return &quot;M480,95L480,148L&quot;+B[0]+&quot;,148L&quot;+B[0]+&quot;,&quot;+B[1];return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+A[0]+&quot;,268L&quot;+B[0]+&quot;,268L&quot;+B[0]+&quot;,&quot;+B[1]}
+[[40,24,220,436,&quot;ŞUBE 1&quot;,&quot;10.1.1.0/24&quot;,150],[280,24,400,436,&quot;MERKEZ&quot;],[700,24,220,436,&quot;ŞUBE 2&quot;,&quot;10.2.1.0/24&quot;,810]].forEach(function(z){o+=&#x27;&lt;rect x=&quot;&#x27;+z[0]+&#x27;&quot; y=&quot;&#x27;+z[1]+&#x27;&quot; width=&quot;&#x27;+z[2]+&#x27;&quot; height=&quot;&#x27;+z[3]+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.l+&#x27;&quot; stroke-width=&quot;1.5&quot;/&gt;&#x27;+T(z[0]+12,z[1]+26,z[4],C.m,&quot;start&quot;,700);if(z[5])o+=T(z[6],450,z[5],C.d,0,0,1)});
+o+=T(370,450,&quot;10.0.1.0/24&quot;,C.d,0,0,1)+T(590,450,&quot;10.0.2.0/24&quot;,C.d,0,0,1)+T(315,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d)+T(645,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d);
+E.forEach(function(e){var a=e[0],b=e[1],w=N[a][2]==&quot;r&quot;&amp;&amp;N[b][2]==&quot;r&quot;,c=C.m,sw=w?3:1.6,da=&quot;&quot;,op=1;if(has(H.r,a,b)){c=C.r;sw=w?4:3.5;da=&#x27; stroke-dasharray=&quot;7 5&quot;&#x27;}else if(has(H.g,a,b)){c=C.g;sw=w?4:3.5}else if(has(H.e,a,b)){c=C.a;sw=w?4:3.5}else{if(w)c=C.i;if(D)op=.2}o+=&#x27;&lt;path d=&quot;&#x27;+P(a,b)+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+c+&#x27;&quot; stroke-width=&quot;&#x27;+sw+&#x27;&quot; stroke-linejoin=&quot;round&quot; opacity=&quot;&#x27;+op+&#x27;&quot;&#x27;+da+&#x27;/&gt;&#x27;});
+o+=&#x27;&lt;path d=&quot;M286,388L286,396L454,396L454,388&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.a+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(370,420,&quot;VIP 10.0.1.100&quot;,C.a,0,600,1);
+for(var k in N){var n=N[k],x=n[0],y=n[1],g=&#x27;&lt;g opacity=&quot;&#x27;+((!D||H.n.indexOf(k)&gt;=0)?1:.3)+&#x27;&quot;&gt;&#x27;;if(n[2]==&quot;r&quot;)g+=&#x27;&lt;circle cx=&quot;&#x27;+x+&#x27;&quot; cy=&quot;&#x27;+y+&#x27;&quot; r=&quot;24&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;2&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.i,0,700);else if(n[2]==&quot;s&quot;)g+=&#x27;&lt;rect x=&quot;&#x27;+(x-36)+&#x27;&quot; y=&quot;&#x27;+(y-16)+&#x27;&quot; width=&quot;72&quot; height=&quot;32&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.a+&#x27;&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.p,0,700);else{if(n[2]==&quot;v&quot;){g+=&#x27;&lt;rect x=&quot;&#x27;+(x-13)+&#x27;&quot; y=&quot;&#x27;+(y-18)+&#x27;&quot; width=&quot;26&quot; height=&quot;36&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;[-8,-1,6].forEach(function(d){g+=&#x27;&lt;line x1=&quot;&#x27;+(x-7)+&#x27;&quot; x2=&quot;&#x27;+(x+7)+&#x27;&quot; y1=&quot;&#x27;+(y+d)+&#x27;&quot; y2=&quot;&#x27;+(y+d)+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.4&quot;/&gt;&#x27;})}else g+=&#x27;&lt;rect x=&quot;&#x27;+(x-17)+&#x27;&quot; y=&quot;&#x27;+(y-14)+&#x27;&quot; width=&quot;34&quot; height=&quot;23&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;path d=&quot;M&#x27;+(x-8)+&#x27;,&#x27;+(y+15)+&#x27;h16M&#x27;+x+&#x27;,&#x27;+(y+9)+&#x27;v6&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;g+=T(x,y+40,k,C.i,0,600)+T(x,y+40+F,n[3],C.d,0,0,1)}o+=g+&#x27;&lt;/g&gt;&#x27;}
+if(H.x){var q=N[H.x];o+=&#x27;&lt;rect x=&quot;&#x27;+(q[0]-44)+&#x27;&quot; y=&quot;&#x27;+(q[1]-24)+&#x27;&quot; width=&quot;88&quot; height=&quot;48&quot; rx=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.r+&#x27;&quot; stroke-width=&quot;2.5&quot;/&gt;&#x27;}
+if(H.b){var m=N[H.b[0]],bc=H.b[2]==&quot;r&quot;?C.r:C.a,bw=H.b[1].length*F*.6+24,bx=m[0]+52;o+=&#x27;&lt;line x1=&quot;&#x27;+(m[0]+36)+&#x27;&quot; x2=&quot;&#x27;+bx+&#x27;&quot; y1=&quot;&#x27;+m[1]+&#x27;&quot; y2=&quot;&#x27;+m[1]+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;rect x=&quot;&#x27;+bx+&#x27;&quot; y=&quot;&#x27;+(m[1]-F*.85)+&#x27;&quot; width=&quot;&#x27;+bw+&#x27;&quot; height=&quot;&#x27;+F*1.7+&#x27;&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(bx+bw/2,m[1]+F*.35,H.b[1],bc,0,700)}
+document.getElementById(&quot;s&quot;).innerHTML=o;
+&lt;/script&gt;" frameborder="0" scrolling="no"></iframe>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Senaryo şu: Şube 1’deki b1h1 kullanıcısı şirketin web sitesini açıyor. Hedef adres 10.0.1.100 başka bir ağda olduğu için paket önce kendi ağının kapısına, r2 router’ına gidiyor. r2 paketi WAN hattına koyuyor. Bu yolculuğun en yavaş kısmı burası: hat 10 Mbit/s ve tek yönde 20 ms gecikmeli. Paket merkezdeki r1’e ulaşıyor.</aside>
+</section>
+<section id="lb2" class="step" data-transition="fade">
+<p class="steptag">Yük dengeleme · 2 / 4</p>
+<h2>POX sunucuyu seçiyor</h2>
+<p class="lede">r1 sanal adresi sorunca POX kendisi cevap veriyor (proxy ARP). İstek s1’e gelince kural yok, POX’a soruluyor; POX sıradaki sunucu web2’yi seçip s1’e iki kural yazıyor.</p>
+<iframe style="position:absolute; left:128px; top:340px; width:1664px; height:580px" srcdoc="&lt;!doctype html&gt;&lt;meta charset=&#x27;utf-8&#x27;&gt;&lt;style&gt;html,body{margin:0;height:100%;background:transparent}svg{display:block;width:100%;height:100%;font-family:-apple-system,&quot;Helvetica Neue&quot;,Arial,sans-serif}&lt;/style&gt;&lt;svg id=&quot;s&quot; viewBox=&quot;0 0 960 470&quot;&gt;&lt;/svg&gt;&lt;script&gt;
+var H={e:[&quot;r1-s1&quot;],r:[],g:[],n:[&quot;r1&quot;,&quot;s1&quot;],b:[&quot;s1&quot;,&quot;→ POX&quot;,&quot;a&quot;],x:null,f:20};
+var C={i:&quot;#14171C&quot;,m:&quot;#868D99&quot;,d:&quot;#5E6573&quot;,a:&quot;#1F4FD1&quot;,r:&quot;#C4302B&quot;,g:&quot;#1C7A4E&quot;,p:&quot;#F7F8FA&quot;,l:&quot;#D8DCE2&quot;};
+var N={r2:[150,95,&quot;r&quot;],r1:[480,95,&quot;r&quot;],r3:[810,95,&quot;r&quot;],s3:[150,205,&quot;s&quot;],s1:[370,205,&quot;s&quot;],s2:[590,205,&quot;s&quot;],s4:[810,205,&quot;s&quot;],b1h1:[100,318,&quot;p&quot;,&quot;.11&quot;],b1h2:[200,318,&quot;p&quot;,&quot;.12&quot;],web1:[300,318,&quot;v&quot;,&quot;.11&quot;],web2:[370,318,&quot;v&quot;,&quot;.12&quot;],web3:[440,318,&quot;v&quot;,&quot;.13&quot;],pc1:[550,318,&quot;p&quot;,&quot;.11&quot;],pc2:[630,318,&quot;p&quot;,&quot;.12&quot;],b2h1:[760,318,&quot;p&quot;,&quot;.11&quot;],b2h2:[860,318,&quot;p&quot;,&quot;.12&quot;]};
+var E=[[&quot;r2&quot;,&quot;r1&quot;],[&quot;r1&quot;,&quot;r3&quot;],[&quot;r2&quot;,&quot;s3&quot;],[&quot;r3&quot;,&quot;s4&quot;],[&quot;r1&quot;,&quot;s1&quot;],[&quot;r1&quot;,&quot;s2&quot;],[&quot;s3&quot;,&quot;b1h1&quot;],[&quot;s3&quot;,&quot;b1h2&quot;],[&quot;s1&quot;,&quot;web1&quot;],[&quot;s1&quot;,&quot;web2&quot;],[&quot;s1&quot;,&quot;web3&quot;],[&quot;s2&quot;,&quot;pc1&quot;],[&quot;s2&quot;,&quot;pc2&quot;],[&quot;s4&quot;,&quot;b2h1&quot;],[&quot;s4&quot;,&quot;b2h2&quot;]];
+var F=H.f,D=H.e.length+H.r.length+H.g.length&gt;0,o=&quot;&quot;;
+function has(L,a,b){return L.indexOf(a+&quot;-&quot;+b)&gt;=0||L.indexOf(b+&quot;-&quot;+a)&gt;=0}
+function T(x,y,t,c,an,w,mono){return &#x27;&lt;text x=&quot;&#x27;+x+&#x27;&quot; y=&quot;&#x27;+y+&#x27;&quot; fill=&quot;&#x27;+c+&#x27;&quot; text-anchor=&quot;&#x27;+(an||&quot;middle&quot;)+&#x27;&quot; font-size=&quot;&#x27;+F+&#x27;&quot; font-weight=&quot;&#x27;+(w||400)+&#x27;&quot;&#x27;+(mono?&#x27; font-family=&quot;Menlo,Consolas,monospace&quot;&#x27;:&#x27;&#x27;)+&#x27;&gt;&#x27;+t+&#x27;&lt;/text&gt;&#x27;}
+function P(a,b){var A=N[a],B=N[b];if(A[2]==&quot;r&quot;&amp;&amp;B[2]==&quot;r&quot;||B[2]==&quot;s&quot;&amp;&amp;a!=&quot;r1&quot;)return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+B[0]+&quot;,&quot;+B[1];if(a==&quot;r1&quot;)return &quot;M480,95L480,148L&quot;+B[0]+&quot;,148L&quot;+B[0]+&quot;,&quot;+B[1];return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+A[0]+&quot;,268L&quot;+B[0]+&quot;,268L&quot;+B[0]+&quot;,&quot;+B[1]}
+[[40,24,220,436,&quot;ŞUBE 1&quot;,&quot;10.1.1.0/24&quot;,150],[280,24,400,436,&quot;MERKEZ&quot;],[700,24,220,436,&quot;ŞUBE 2&quot;,&quot;10.2.1.0/24&quot;,810]].forEach(function(z){o+=&#x27;&lt;rect x=&quot;&#x27;+z[0]+&#x27;&quot; y=&quot;&#x27;+z[1]+&#x27;&quot; width=&quot;&#x27;+z[2]+&#x27;&quot; height=&quot;&#x27;+z[3]+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.l+&#x27;&quot; stroke-width=&quot;1.5&quot;/&gt;&#x27;+T(z[0]+12,z[1]+26,z[4],C.m,&quot;start&quot;,700);if(z[5])o+=T(z[6],450,z[5],C.d,0,0,1)});
+o+=T(370,450,&quot;10.0.1.0/24&quot;,C.d,0,0,1)+T(590,450,&quot;10.0.2.0/24&quot;,C.d,0,0,1)+T(315,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d)+T(645,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d);
+E.forEach(function(e){var a=e[0],b=e[1],w=N[a][2]==&quot;r&quot;&amp;&amp;N[b][2]==&quot;r&quot;,c=C.m,sw=w?3:1.6,da=&quot;&quot;,op=1;if(has(H.r,a,b)){c=C.r;sw=w?4:3.5;da=&#x27; stroke-dasharray=&quot;7 5&quot;&#x27;}else if(has(H.g,a,b)){c=C.g;sw=w?4:3.5}else if(has(H.e,a,b)){c=C.a;sw=w?4:3.5}else{if(w)c=C.i;if(D)op=.2}o+=&#x27;&lt;path d=&quot;&#x27;+P(a,b)+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+c+&#x27;&quot; stroke-width=&quot;&#x27;+sw+&#x27;&quot; stroke-linejoin=&quot;round&quot; opacity=&quot;&#x27;+op+&#x27;&quot;&#x27;+da+&#x27;/&gt;&#x27;});
+o+=&#x27;&lt;path d=&quot;M286,388L286,396L454,396L454,388&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.a+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(370,420,&quot;VIP 10.0.1.100&quot;,C.a,0,600,1);
+for(var k in N){var n=N[k],x=n[0],y=n[1],g=&#x27;&lt;g opacity=&quot;&#x27;+((!D||H.n.indexOf(k)&gt;=0)?1:.3)+&#x27;&quot;&gt;&#x27;;if(n[2]==&quot;r&quot;)g+=&#x27;&lt;circle cx=&quot;&#x27;+x+&#x27;&quot; cy=&quot;&#x27;+y+&#x27;&quot; r=&quot;24&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;2&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.i,0,700);else if(n[2]==&quot;s&quot;)g+=&#x27;&lt;rect x=&quot;&#x27;+(x-36)+&#x27;&quot; y=&quot;&#x27;+(y-16)+&#x27;&quot; width=&quot;72&quot; height=&quot;32&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.a+&#x27;&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.p,0,700);else{if(n[2]==&quot;v&quot;){g+=&#x27;&lt;rect x=&quot;&#x27;+(x-13)+&#x27;&quot; y=&quot;&#x27;+(y-18)+&#x27;&quot; width=&quot;26&quot; height=&quot;36&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;[-8,-1,6].forEach(function(d){g+=&#x27;&lt;line x1=&quot;&#x27;+(x-7)+&#x27;&quot; x2=&quot;&#x27;+(x+7)+&#x27;&quot; y1=&quot;&#x27;+(y+d)+&#x27;&quot; y2=&quot;&#x27;+(y+d)+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.4&quot;/&gt;&#x27;})}else g+=&#x27;&lt;rect x=&quot;&#x27;+(x-17)+&#x27;&quot; y=&quot;&#x27;+(y-14)+&#x27;&quot; width=&quot;34&quot; height=&quot;23&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;path d=&quot;M&#x27;+(x-8)+&#x27;,&#x27;+(y+15)+&#x27;h16M&#x27;+x+&#x27;,&#x27;+(y+9)+&#x27;v6&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;g+=T(x,y+40,k,C.i,0,600)+T(x,y+40+F,n[3],C.d,0,0,1)}o+=g+&#x27;&lt;/g&gt;&#x27;}
+if(H.x){var q=N[H.x];o+=&#x27;&lt;rect x=&quot;&#x27;+(q[0]-44)+&#x27;&quot; y=&quot;&#x27;+(q[1]-24)+&#x27;&quot; width=&quot;88&quot; height=&quot;48&quot; rx=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.r+&#x27;&quot; stroke-width=&quot;2.5&quot;/&gt;&#x27;}
+if(H.b){var m=N[H.b[0]],bc=H.b[2]==&quot;r&quot;?C.r:C.a,bw=H.b[1].length*F*.6+24,bx=m[0]+52;o+=&#x27;&lt;line x1=&quot;&#x27;+(m[0]+36)+&#x27;&quot; x2=&quot;&#x27;+bx+&#x27;&quot; y1=&quot;&#x27;+m[1]+&#x27;&quot; y2=&quot;&#x27;+m[1]+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;rect x=&quot;&#x27;+bx+&#x27;&quot; y=&quot;&#x27;+(m[1]-F*.85)+&#x27;&quot; width=&quot;&#x27;+bw+&#x27;&quot; height=&quot;&#x27;+F*1.7+&#x27;&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(bx+bw/2,m[1]+F*.35,H.b[1],bc,0,700)}
+document.getElementById(&quot;s&quot;).innerHTML=o;
+&lt;/script&gt;" frameborder="0" scrolling="no"></iframe>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>r1 paketi sunucu ağına vermeden önce 10.0.1.100’ün MAC adresini soruyor. Bu adres hiçbir makinede yok; soruyu s1 POX’a iletiyor ve POX kendisi sahte bir MAC adresiyle, 02:00:00:00:01:00 ile cevap veriyor. Buna proxy ARP deniyor. Sonra asıl bağlantı isteği, yani SYN, s1’e geliyor. s1’de bu bağlantı için kural yok, POX’a soruyor. POX önce SYN’i saldırı için sayıyor, eşiğin altında. Sonra sıradaki sunucuyu seçiyor: web2. POX’un logunda tam olarak şu satır çıkıyor: YUK-DENGELE, TCP 10.1.1.11’den 10.0.1.100 port 80’e, sunucu 10.0.1.12, yeni akış.</aside>
+</section>
+<section id="lb3" class="step" data-transition="fade">
+<p class="steptag">Yük dengeleme · 3 / 4</p>
+<h2>Cevap sanal adresten dönüyor</h2>
+<p class="lede">s1 hedefi web2’nin gerçek adresi 10.0.1.12’ye çeviriyor. Cevapta kaynak adres yeniden 10.0.1.100 yapılıyor; b1h1 hangi sunucunun cevap verdiğini bilmiyor.</p>
+<iframe style="position:absolute; left:128px; top:340px; width:1664px; height:580px" srcdoc="&lt;!doctype html&gt;&lt;meta charset=&#x27;utf-8&#x27;&gt;&lt;style&gt;html,body{margin:0;height:100%;background:transparent}svg{display:block;width:100%;height:100%;font-family:-apple-system,&quot;Helvetica Neue&quot;,Arial,sans-serif}&lt;/style&gt;&lt;svg id=&quot;s&quot; viewBox=&quot;0 0 960 470&quot;&gt;&lt;/svg&gt;&lt;script&gt;
+var H={e:[],r:[],g:[&quot;s1-web2&quot;,&quot;r1-s1&quot;,&quot;r2-r1&quot;,&quot;r2-s3&quot;,&quot;b1h1-s3&quot;],n:[&quot;web2&quot;,&quot;s1&quot;,&quot;r1&quot;,&quot;r2&quot;,&quot;s3&quot;,&quot;b1h1&quot;],b:null,x:null,f:20};
+var C={i:&quot;#14171C&quot;,m:&quot;#868D99&quot;,d:&quot;#5E6573&quot;,a:&quot;#1F4FD1&quot;,r:&quot;#C4302B&quot;,g:&quot;#1C7A4E&quot;,p:&quot;#F7F8FA&quot;,l:&quot;#D8DCE2&quot;};
+var N={r2:[150,95,&quot;r&quot;],r1:[480,95,&quot;r&quot;],r3:[810,95,&quot;r&quot;],s3:[150,205,&quot;s&quot;],s1:[370,205,&quot;s&quot;],s2:[590,205,&quot;s&quot;],s4:[810,205,&quot;s&quot;],b1h1:[100,318,&quot;p&quot;,&quot;.11&quot;],b1h2:[200,318,&quot;p&quot;,&quot;.12&quot;],web1:[300,318,&quot;v&quot;,&quot;.11&quot;],web2:[370,318,&quot;v&quot;,&quot;.12&quot;],web3:[440,318,&quot;v&quot;,&quot;.13&quot;],pc1:[550,318,&quot;p&quot;,&quot;.11&quot;],pc2:[630,318,&quot;p&quot;,&quot;.12&quot;],b2h1:[760,318,&quot;p&quot;,&quot;.11&quot;],b2h2:[860,318,&quot;p&quot;,&quot;.12&quot;]};
+var E=[[&quot;r2&quot;,&quot;r1&quot;],[&quot;r1&quot;,&quot;r3&quot;],[&quot;r2&quot;,&quot;s3&quot;],[&quot;r3&quot;,&quot;s4&quot;],[&quot;r1&quot;,&quot;s1&quot;],[&quot;r1&quot;,&quot;s2&quot;],[&quot;s3&quot;,&quot;b1h1&quot;],[&quot;s3&quot;,&quot;b1h2&quot;],[&quot;s1&quot;,&quot;web1&quot;],[&quot;s1&quot;,&quot;web2&quot;],[&quot;s1&quot;,&quot;web3&quot;],[&quot;s2&quot;,&quot;pc1&quot;],[&quot;s2&quot;,&quot;pc2&quot;],[&quot;s4&quot;,&quot;b2h1&quot;],[&quot;s4&quot;,&quot;b2h2&quot;]];
+var F=H.f,D=H.e.length+H.r.length+H.g.length&gt;0,o=&quot;&quot;;
+function has(L,a,b){return L.indexOf(a+&quot;-&quot;+b)&gt;=0||L.indexOf(b+&quot;-&quot;+a)&gt;=0}
+function T(x,y,t,c,an,w,mono){return &#x27;&lt;text x=&quot;&#x27;+x+&#x27;&quot; y=&quot;&#x27;+y+&#x27;&quot; fill=&quot;&#x27;+c+&#x27;&quot; text-anchor=&quot;&#x27;+(an||&quot;middle&quot;)+&#x27;&quot; font-size=&quot;&#x27;+F+&#x27;&quot; font-weight=&quot;&#x27;+(w||400)+&#x27;&quot;&#x27;+(mono?&#x27; font-family=&quot;Menlo,Consolas,monospace&quot;&#x27;:&#x27;&#x27;)+&#x27;&gt;&#x27;+t+&#x27;&lt;/text&gt;&#x27;}
+function P(a,b){var A=N[a],B=N[b];if(A[2]==&quot;r&quot;&amp;&amp;B[2]==&quot;r&quot;||B[2]==&quot;s&quot;&amp;&amp;a!=&quot;r1&quot;)return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+B[0]+&quot;,&quot;+B[1];if(a==&quot;r1&quot;)return &quot;M480,95L480,148L&quot;+B[0]+&quot;,148L&quot;+B[0]+&quot;,&quot;+B[1];return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+A[0]+&quot;,268L&quot;+B[0]+&quot;,268L&quot;+B[0]+&quot;,&quot;+B[1]}
+[[40,24,220,436,&quot;ŞUBE 1&quot;,&quot;10.1.1.0/24&quot;,150],[280,24,400,436,&quot;MERKEZ&quot;],[700,24,220,436,&quot;ŞUBE 2&quot;,&quot;10.2.1.0/24&quot;,810]].forEach(function(z){o+=&#x27;&lt;rect x=&quot;&#x27;+z[0]+&#x27;&quot; y=&quot;&#x27;+z[1]+&#x27;&quot; width=&quot;&#x27;+z[2]+&#x27;&quot; height=&quot;&#x27;+z[3]+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.l+&#x27;&quot; stroke-width=&quot;1.5&quot;/&gt;&#x27;+T(z[0]+12,z[1]+26,z[4],C.m,&quot;start&quot;,700);if(z[5])o+=T(z[6],450,z[5],C.d,0,0,1)});
+o+=T(370,450,&quot;10.0.1.0/24&quot;,C.d,0,0,1)+T(590,450,&quot;10.0.2.0/24&quot;,C.d,0,0,1)+T(315,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d)+T(645,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d);
+E.forEach(function(e){var a=e[0],b=e[1],w=N[a][2]==&quot;r&quot;&amp;&amp;N[b][2]==&quot;r&quot;,c=C.m,sw=w?3:1.6,da=&quot;&quot;,op=1;if(has(H.r,a,b)){c=C.r;sw=w?4:3.5;da=&#x27; stroke-dasharray=&quot;7 5&quot;&#x27;}else if(has(H.g,a,b)){c=C.g;sw=w?4:3.5}else if(has(H.e,a,b)){c=C.a;sw=w?4:3.5}else{if(w)c=C.i;if(D)op=.2}o+=&#x27;&lt;path d=&quot;&#x27;+P(a,b)+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+c+&#x27;&quot; stroke-width=&quot;&#x27;+sw+&#x27;&quot; stroke-linejoin=&quot;round&quot; opacity=&quot;&#x27;+op+&#x27;&quot;&#x27;+da+&#x27;/&gt;&#x27;});
+o+=&#x27;&lt;path d=&quot;M286,388L286,396L454,396L454,388&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.a+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(370,420,&quot;VIP 10.0.1.100&quot;,C.a,0,600,1);
+for(var k in N){var n=N[k],x=n[0],y=n[1],g=&#x27;&lt;g opacity=&quot;&#x27;+((!D||H.n.indexOf(k)&gt;=0)?1:.3)+&#x27;&quot;&gt;&#x27;;if(n[2]==&quot;r&quot;)g+=&#x27;&lt;circle cx=&quot;&#x27;+x+&#x27;&quot; cy=&quot;&#x27;+y+&#x27;&quot; r=&quot;24&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;2&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.i,0,700);else if(n[2]==&quot;s&quot;)g+=&#x27;&lt;rect x=&quot;&#x27;+(x-36)+&#x27;&quot; y=&quot;&#x27;+(y-16)+&#x27;&quot; width=&quot;72&quot; height=&quot;32&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.a+&#x27;&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.p,0,700);else{if(n[2]==&quot;v&quot;){g+=&#x27;&lt;rect x=&quot;&#x27;+(x-13)+&#x27;&quot; y=&quot;&#x27;+(y-18)+&#x27;&quot; width=&quot;26&quot; height=&quot;36&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;[-8,-1,6].forEach(function(d){g+=&#x27;&lt;line x1=&quot;&#x27;+(x-7)+&#x27;&quot; x2=&quot;&#x27;+(x+7)+&#x27;&quot; y1=&quot;&#x27;+(y+d)+&#x27;&quot; y2=&quot;&#x27;+(y+d)+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.4&quot;/&gt;&#x27;})}else g+=&#x27;&lt;rect x=&quot;&#x27;+(x-17)+&#x27;&quot; y=&quot;&#x27;+(y-14)+&#x27;&quot; width=&quot;34&quot; height=&quot;23&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;path d=&quot;M&#x27;+(x-8)+&#x27;,&#x27;+(y+15)+&#x27;h16M&#x27;+x+&#x27;,&#x27;+(y+9)+&#x27;v6&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;g+=T(x,y+40,k,C.i,0,600)+T(x,y+40+F,n[3],C.d,0,0,1)}o+=g+&#x27;&lt;/g&gt;&#x27;}
+if(H.x){var q=N[H.x];o+=&#x27;&lt;rect x=&quot;&#x27;+(q[0]-44)+&#x27;&quot; y=&quot;&#x27;+(q[1]-24)+&#x27;&quot; width=&quot;88&quot; height=&quot;48&quot; rx=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.r+&#x27;&quot; stroke-width=&quot;2.5&quot;/&gt;&#x27;}
+if(H.b){var m=N[H.b[0]],bc=H.b[2]==&quot;r&quot;?C.r:C.a,bw=H.b[1].length*F*.6+24,bx=m[0]+52;o+=&#x27;&lt;line x1=&quot;&#x27;+(m[0]+36)+&#x27;&quot; x2=&quot;&#x27;+bx+&#x27;&quot; y1=&quot;&#x27;+m[1]+&#x27;&quot; y2=&quot;&#x27;+m[1]+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;rect x=&quot;&#x27;+bx+&#x27;&quot; y=&quot;&#x27;+(m[1]-F*.85)+&#x27;&quot; width=&quot;&#x27;+bw+&#x27;&quot; height=&quot;&#x27;+F*1.7+&#x27;&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(bx+bw/2,m[1]+F*.35,H.b[1],bc,0,700)}
+document.getElementById(&quot;s&quot;).innerHTML=o;
+&lt;/script&gt;" frameborder="0" scrolling="no"></iframe>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>POX’un yazdığı iki kuraldan gidiş kuralı paketin hedef adresini sanal adresten web2’nin gerçek adresine çeviriyor ve paketi web2’nin portundan çıkarıyor. web2 cevap verince bu kez dönüş kuralı çalışıyor: cevabın kaynak adresi tekrar 10.0.1.100 yapılıyor. Bu çok önemli, çünkü kullanıcı 10.0.1.100 ile konuştuğunu sanıyor; tanımadığı bir adresten cevap gelse bağlantıyı reddederdi. Yeşil çizgi cevabın izlediği yol. b1h1 açısından hep sanal adresle konuştu, arkada hangi sunucunun cevap verdiğini bilmiyor.</aside>
+</section>
+<section id="lb4" class="step">
+<p class="steptag">Yük dengeleme · 4 / 4</p>
+<h2>Sonraki bağlantı web3’e</h2>
+<p class="lede">Bu bağlantının diğer paketleri POX’a uğramadan kurallarla gidiyor. Yeni bağlantı gelince sıra web3’te, sonra web1’de. Ölçümde 60 istek 20 / 20 / 20 dağıldı.</p>
+<iframe style="position:absolute; left:128px; top:340px; width:1664px; height:580px" srcdoc="&lt;!doctype html&gt;&lt;meta charset=&#x27;utf-8&#x27;&gt;&lt;style&gt;html,body{margin:0;height:100%;background:transparent}svg{display:block;width:100%;height:100%;font-family:-apple-system,&quot;Helvetica Neue&quot;,Arial,sans-serif}&lt;/style&gt;&lt;svg id=&quot;s&quot; viewBox=&quot;0 0 960 470&quot;&gt;&lt;/svg&gt;&lt;script&gt;
+var H={e:[&quot;r1-s1&quot;,&quot;s1-web3&quot;],r:[],g:[],n:[&quot;r1&quot;,&quot;s1&quot;,&quot;web1&quot;,&quot;web2&quot;,&quot;web3&quot;],b:[&quot;s1&quot;,&quot;→ POX&quot;,&quot;a&quot;],x:null,f:20};
+var C={i:&quot;#14171C&quot;,m:&quot;#868D99&quot;,d:&quot;#5E6573&quot;,a:&quot;#1F4FD1&quot;,r:&quot;#C4302B&quot;,g:&quot;#1C7A4E&quot;,p:&quot;#F7F8FA&quot;,l:&quot;#D8DCE2&quot;};
+var N={r2:[150,95,&quot;r&quot;],r1:[480,95,&quot;r&quot;],r3:[810,95,&quot;r&quot;],s3:[150,205,&quot;s&quot;],s1:[370,205,&quot;s&quot;],s2:[590,205,&quot;s&quot;],s4:[810,205,&quot;s&quot;],b1h1:[100,318,&quot;p&quot;,&quot;.11&quot;],b1h2:[200,318,&quot;p&quot;,&quot;.12&quot;],web1:[300,318,&quot;v&quot;,&quot;.11&quot;],web2:[370,318,&quot;v&quot;,&quot;.12&quot;],web3:[440,318,&quot;v&quot;,&quot;.13&quot;],pc1:[550,318,&quot;p&quot;,&quot;.11&quot;],pc2:[630,318,&quot;p&quot;,&quot;.12&quot;],b2h1:[760,318,&quot;p&quot;,&quot;.11&quot;],b2h2:[860,318,&quot;p&quot;,&quot;.12&quot;]};
+var E=[[&quot;r2&quot;,&quot;r1&quot;],[&quot;r1&quot;,&quot;r3&quot;],[&quot;r2&quot;,&quot;s3&quot;],[&quot;r3&quot;,&quot;s4&quot;],[&quot;r1&quot;,&quot;s1&quot;],[&quot;r1&quot;,&quot;s2&quot;],[&quot;s3&quot;,&quot;b1h1&quot;],[&quot;s3&quot;,&quot;b1h2&quot;],[&quot;s1&quot;,&quot;web1&quot;],[&quot;s1&quot;,&quot;web2&quot;],[&quot;s1&quot;,&quot;web3&quot;],[&quot;s2&quot;,&quot;pc1&quot;],[&quot;s2&quot;,&quot;pc2&quot;],[&quot;s4&quot;,&quot;b2h1&quot;],[&quot;s4&quot;,&quot;b2h2&quot;]];
+var F=H.f,D=H.e.length+H.r.length+H.g.length&gt;0,o=&quot;&quot;;
+function has(L,a,b){return L.indexOf(a+&quot;-&quot;+b)&gt;=0||L.indexOf(b+&quot;-&quot;+a)&gt;=0}
+function T(x,y,t,c,an,w,mono){return &#x27;&lt;text x=&quot;&#x27;+x+&#x27;&quot; y=&quot;&#x27;+y+&#x27;&quot; fill=&quot;&#x27;+c+&#x27;&quot; text-anchor=&quot;&#x27;+(an||&quot;middle&quot;)+&#x27;&quot; font-size=&quot;&#x27;+F+&#x27;&quot; font-weight=&quot;&#x27;+(w||400)+&#x27;&quot;&#x27;+(mono?&#x27; font-family=&quot;Menlo,Consolas,monospace&quot;&#x27;:&#x27;&#x27;)+&#x27;&gt;&#x27;+t+&#x27;&lt;/text&gt;&#x27;}
+function P(a,b){var A=N[a],B=N[b];if(A[2]==&quot;r&quot;&amp;&amp;B[2]==&quot;r&quot;||B[2]==&quot;s&quot;&amp;&amp;a!=&quot;r1&quot;)return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+B[0]+&quot;,&quot;+B[1];if(a==&quot;r1&quot;)return &quot;M480,95L480,148L&quot;+B[0]+&quot;,148L&quot;+B[0]+&quot;,&quot;+B[1];return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+A[0]+&quot;,268L&quot;+B[0]+&quot;,268L&quot;+B[0]+&quot;,&quot;+B[1]}
+[[40,24,220,436,&quot;ŞUBE 1&quot;,&quot;10.1.1.0/24&quot;,150],[280,24,400,436,&quot;MERKEZ&quot;],[700,24,220,436,&quot;ŞUBE 2&quot;,&quot;10.2.1.0/24&quot;,810]].forEach(function(z){o+=&#x27;&lt;rect x=&quot;&#x27;+z[0]+&#x27;&quot; y=&quot;&#x27;+z[1]+&#x27;&quot; width=&quot;&#x27;+z[2]+&#x27;&quot; height=&quot;&#x27;+z[3]+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.l+&#x27;&quot; stroke-width=&quot;1.5&quot;/&gt;&#x27;+T(z[0]+12,z[1]+26,z[4],C.m,&quot;start&quot;,700);if(z[5])o+=T(z[6],450,z[5],C.d,0,0,1)});
+o+=T(370,450,&quot;10.0.1.0/24&quot;,C.d,0,0,1)+T(590,450,&quot;10.0.2.0/24&quot;,C.d,0,0,1)+T(315,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d)+T(645,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d);
+E.forEach(function(e){var a=e[0],b=e[1],w=N[a][2]==&quot;r&quot;&amp;&amp;N[b][2]==&quot;r&quot;,c=C.m,sw=w?3:1.6,da=&quot;&quot;,op=1;if(has(H.r,a,b)){c=C.r;sw=w?4:3.5;da=&#x27; stroke-dasharray=&quot;7 5&quot;&#x27;}else if(has(H.g,a,b)){c=C.g;sw=w?4:3.5}else if(has(H.e,a,b)){c=C.a;sw=w?4:3.5}else{if(w)c=C.i;if(D)op=.2}o+=&#x27;&lt;path d=&quot;&#x27;+P(a,b)+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+c+&#x27;&quot; stroke-width=&quot;&#x27;+sw+&#x27;&quot; stroke-linejoin=&quot;round&quot; opacity=&quot;&#x27;+op+&#x27;&quot;&#x27;+da+&#x27;/&gt;&#x27;});
+o+=&#x27;&lt;path d=&quot;M286,388L286,396L454,396L454,388&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.a+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(370,420,&quot;VIP 10.0.1.100&quot;,C.a,0,600,1);
+for(var k in N){var n=N[k],x=n[0],y=n[1],g=&#x27;&lt;g opacity=&quot;&#x27;+((!D||H.n.indexOf(k)&gt;=0)?1:.3)+&#x27;&quot;&gt;&#x27;;if(n[2]==&quot;r&quot;)g+=&#x27;&lt;circle cx=&quot;&#x27;+x+&#x27;&quot; cy=&quot;&#x27;+y+&#x27;&quot; r=&quot;24&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;2&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.i,0,700);else if(n[2]==&quot;s&quot;)g+=&#x27;&lt;rect x=&quot;&#x27;+(x-36)+&#x27;&quot; y=&quot;&#x27;+(y-16)+&#x27;&quot; width=&quot;72&quot; height=&quot;32&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.a+&#x27;&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.p,0,700);else{if(n[2]==&quot;v&quot;){g+=&#x27;&lt;rect x=&quot;&#x27;+(x-13)+&#x27;&quot; y=&quot;&#x27;+(y-18)+&#x27;&quot; width=&quot;26&quot; height=&quot;36&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;[-8,-1,6].forEach(function(d){g+=&#x27;&lt;line x1=&quot;&#x27;+(x-7)+&#x27;&quot; x2=&quot;&#x27;+(x+7)+&#x27;&quot; y1=&quot;&#x27;+(y+d)+&#x27;&quot; y2=&quot;&#x27;+(y+d)+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.4&quot;/&gt;&#x27;})}else g+=&#x27;&lt;rect x=&quot;&#x27;+(x-17)+&#x27;&quot; y=&quot;&#x27;+(y-14)+&#x27;&quot; width=&quot;34&quot; height=&quot;23&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;path d=&quot;M&#x27;+(x-8)+&#x27;,&#x27;+(y+15)+&#x27;h16M&#x27;+x+&#x27;,&#x27;+(y+9)+&#x27;v6&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;g+=T(x,y+40,k,C.i,0,600)+T(x,y+40+F,n[3],C.d,0,0,1)}o+=g+&#x27;&lt;/g&gt;&#x27;}
+if(H.x){var q=N[H.x];o+=&#x27;&lt;rect x=&quot;&#x27;+(q[0]-44)+&#x27;&quot; y=&quot;&#x27;+(q[1]-24)+&#x27;&quot; width=&quot;88&quot; height=&quot;48&quot; rx=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.r+&#x27;&quot; stroke-width=&quot;2.5&quot;/&gt;&#x27;}
+if(H.b){var m=N[H.b[0]],bc=H.b[2]==&quot;r&quot;?C.r:C.a,bw=H.b[1].length*F*.6+24,bx=m[0]+52;o+=&#x27;&lt;line x1=&quot;&#x27;+(m[0]+36)+&#x27;&quot; x2=&quot;&#x27;+bx+&#x27;&quot; y1=&quot;&#x27;+m[1]+&#x27;&quot; y2=&quot;&#x27;+m[1]+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;rect x=&quot;&#x27;+bx+&#x27;&quot; y=&quot;&#x27;+(m[1]-F*.85)+&#x27;&quot; width=&quot;&#x27;+bw+&#x27;&quot; height=&quot;&#x27;+F*1.7+&#x27;&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(bx+bw/2,m[1]+F*.35,H.b[1],bc,0,700)}
+document.getElementById(&quot;s&quot;).innerHTML=o;
+&lt;/script&gt;" frameborder="0" scrolling="no"></iframe>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Kurallar yazıldıktan sonra bu bağlantının diğer paketleri POX’a hiç uğramadan, switch’teki kurallarla gidiyor. Yeni bir bağlantı gelince POX yine soruluyor ve bu sefer sıradaki sunucuyu, web3’ü seçiyor; sonra web1, sonra web2. Ölçümde 4 kullanıcının attığı 60 istek üç sunucuya tam olarak 20, 20, 20 dağıldı ve hiçbir istek başarısız olmadı.</aside>
+</section>
+<section id="kurallar" class="alt">
+<h2>s1’e yazılan iki kural</h2>
+<div style="display:flex; flex-direction:column; gap:28px">
+<div class="rulerow"><div class="rulename"><p class="n">Gidiş kuralı</p><p class="k">öncelik 40000</p></div>
+<div class="code"><p>tcp, in_port=1, nw_src=10.1.1.11, nw_dst=<span class="a">10.0.1.100</span>, tp_dst=80</p><p>actions = mod_dl_dst:<span class="a">web2-MAC</span>, mod_nw_dst:<span class="a">10.0.1.12</span>, output:3</p></div></div>
+<div class="rulerow"><div class="rulename"><p class="n">Dönüş kuralı</p><p class="k">öncelik 40000</p></div>
+<div class="code"><p>tcp, in_port=3, nw_src=10.0.1.12, nw_dst=10.1.1.11, tp_src=80</p><p>actions = mod_dl_src:<span class="a">02:00:00:00:01:00</span>, mod_nw_src:<span class="a">10.0.1.100</span>, output:1</p></div></div>
+</div>
+<div class="cols2">
+<div class="col"><h3>Öncelik 40000 &gt; 32768</h3><p>Normal kurallarla eşit öncelikte switch hangisini uygulayacağını garanti etmiyor. Testte cevap sanal adrese çevrilmeden gitti.</p></div>
+<div class="col"><h3>Bağlantı 120 sn hatırlanır</h3><p>Bir bağlantı ortasında sunucu değişirse kopar. POX hangi bağlantıyı hangi sunucuya verdiğini hatırlıyor.</p></div>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Bunlar s1’in kural tablosundan sadeleştirilmiş iki kural; ovs-ofctl dump-flows ile görebiliyoruz. s1’de port 1 router’a, port 2, 3 ve 4 web1, web2 ve web3’e bağlı. Gidiş kuralı: router’dan gelen ve hedefi 10.0.1.100 olan paketin hedef MAC ve IP’sini web2’ninkiyle değiştir, port 3’ten çıkar. Dönüş kuralı: web2’den gelen cevabın kaynağını sanal MAC ve sanal IP yap, port 1’den çıkar. İki ayrıntı testte gerçekten sorun çıkardı. Birincisi öncelik: eşit öncelikte switch normal kuralı seçebiliyor ve cevap çevrilmeden gidiyordu, 40000 öncelik verdik. İkincisi bağlantı hafızası: aynı bağlantının ikinci paketi bazen kural yazılmadan POX’a ulaşıyor ve POX yeni bağlantı sanıp başka sunucu seçiyordu. 120 saniyelik hafızayla çözdük.</aside>
+</section>
+<section id="anomali">
+<p class="label" style="color:#C4302B">Uygulama 2 · Anomali tespiti</p>
+<h2>POX her SYN’i gönderene göre sayıyor</h2>
+<div class="cols2" style="flex:1">
+<div class="col red rise" style="--i:0"><p class="big">50 SYN</p><h3>5 saniyede: SYN flood</h3><p>Saldırgan çok sayıda bağlantı isteği gönderir ama hiçbirini tamamlamaz. Sunucunun ve switch tablosunun kaynakları tükenir.</p></div>
+<div class="col red rise" style="--i:1"><p class="big">10 port</p><h3>10 saniyede: port taraması</h3><p>Saldırgan hangi servislerin açık olduğunu bulmak için çok sayıda farklı portu dener. Genelde bir saldırının ilk adımıdır.</p></div>
+</div>
+<div class="code"><p><span class="c">eşik aşılınca, saldırganın switch’ine:</span></p><p>ip, nw_src=<span class="r">10.0.2.11</span>, priority=60000, hard_timeout=60  actions = <span class="r">drop</span></p></div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>İkinci uygulamamız anomali tespiti. Her TCP bağlantısı bir SYN paketiyle başlar: “seninle bağlantı kurmak istiyorum”. POX ağda gördüğü her SYN’i gönderen adrese göre sayıyor ve iki şey arıyor. 5 saniye içinde 50 SYN gelirse bu bir SYN flood. 10 saniye içinde 10 farklı port denenirse bu bir port taraması. Eşik aşılınca POX, saldırganın bağlı olduğu switch’e bir engel kuralı yazıyor: bu adresten gelen her şeyi düşür. OpenFlow’da eylemi olmayan kural paketi düşürür. Kural en yüksek öncelikte ve 60 saniye sonra kendiliğinden siliniyor; böylece yanlış bir alarm kalıcı zarar vermiyor.</aside>
+</section>
+<section id="syn1" class="step" data-transition="fade">
+<p class="steptag red">SYN flood · 1 / 3</p>
+<h2>Saldırı başlıyor, POX sayıyor</h2>
+<p class="lede">pc1 saniyede 100 bağlantı isteği (SYN) gönderiyor. Her yeni SYN s2’de POX’a soruluyor ve sayılıyor. İlk 49 SYN eşiğin altında kalıp sunuculara ulaşıyor.</p>
+<iframe style="position:absolute; left:128px; top:340px; width:1664px; height:580px" srcdoc="&lt;!doctype html&gt;&lt;meta charset=&#x27;utf-8&#x27;&gt;&lt;style&gt;html,body{margin:0;height:100%;background:transparent}svg{display:block;width:100%;height:100%;font-family:-apple-system,&quot;Helvetica Neue&quot;,Arial,sans-serif}&lt;/style&gt;&lt;svg id=&quot;s&quot; viewBox=&quot;0 0 960 470&quot;&gt;&lt;/svg&gt;&lt;script&gt;
+var H={e:[],r:[&quot;pc1-s2&quot;,&quot;r1-s2&quot;,&quot;r1-s1&quot;,&quot;s1-web1&quot;,&quot;s1-web2&quot;,&quot;s1-web3&quot;],g:[],n:[&quot;pc1&quot;,&quot;s2&quot;,&quot;r1&quot;,&quot;s1&quot;,&quot;web1&quot;,&quot;web2&quot;,&quot;web3&quot;],b:[&quot;s2&quot;,&quot;→ POX&quot;,&quot;a&quot;],x:null,f:20};
+var C={i:&quot;#14171C&quot;,m:&quot;#868D99&quot;,d:&quot;#5E6573&quot;,a:&quot;#1F4FD1&quot;,r:&quot;#C4302B&quot;,g:&quot;#1C7A4E&quot;,p:&quot;#F7F8FA&quot;,l:&quot;#D8DCE2&quot;};
+var N={r2:[150,95,&quot;r&quot;],r1:[480,95,&quot;r&quot;],r3:[810,95,&quot;r&quot;],s3:[150,205,&quot;s&quot;],s1:[370,205,&quot;s&quot;],s2:[590,205,&quot;s&quot;],s4:[810,205,&quot;s&quot;],b1h1:[100,318,&quot;p&quot;,&quot;.11&quot;],b1h2:[200,318,&quot;p&quot;,&quot;.12&quot;],web1:[300,318,&quot;v&quot;,&quot;.11&quot;],web2:[370,318,&quot;v&quot;,&quot;.12&quot;],web3:[440,318,&quot;v&quot;,&quot;.13&quot;],pc1:[550,318,&quot;p&quot;,&quot;.11&quot;],pc2:[630,318,&quot;p&quot;,&quot;.12&quot;],b2h1:[760,318,&quot;p&quot;,&quot;.11&quot;],b2h2:[860,318,&quot;p&quot;,&quot;.12&quot;]};
+var E=[[&quot;r2&quot;,&quot;r1&quot;],[&quot;r1&quot;,&quot;r3&quot;],[&quot;r2&quot;,&quot;s3&quot;],[&quot;r3&quot;,&quot;s4&quot;],[&quot;r1&quot;,&quot;s1&quot;],[&quot;r1&quot;,&quot;s2&quot;],[&quot;s3&quot;,&quot;b1h1&quot;],[&quot;s3&quot;,&quot;b1h2&quot;],[&quot;s1&quot;,&quot;web1&quot;],[&quot;s1&quot;,&quot;web2&quot;],[&quot;s1&quot;,&quot;web3&quot;],[&quot;s2&quot;,&quot;pc1&quot;],[&quot;s2&quot;,&quot;pc2&quot;],[&quot;s4&quot;,&quot;b2h1&quot;],[&quot;s4&quot;,&quot;b2h2&quot;]];
+var F=H.f,D=H.e.length+H.r.length+H.g.length&gt;0,o=&quot;&quot;;
+function has(L,a,b){return L.indexOf(a+&quot;-&quot;+b)&gt;=0||L.indexOf(b+&quot;-&quot;+a)&gt;=0}
+function T(x,y,t,c,an,w,mono){return &#x27;&lt;text x=&quot;&#x27;+x+&#x27;&quot; y=&quot;&#x27;+y+&#x27;&quot; fill=&quot;&#x27;+c+&#x27;&quot; text-anchor=&quot;&#x27;+(an||&quot;middle&quot;)+&#x27;&quot; font-size=&quot;&#x27;+F+&#x27;&quot; font-weight=&quot;&#x27;+(w||400)+&#x27;&quot;&#x27;+(mono?&#x27; font-family=&quot;Menlo,Consolas,monospace&quot;&#x27;:&#x27;&#x27;)+&#x27;&gt;&#x27;+t+&#x27;&lt;/text&gt;&#x27;}
+function P(a,b){var A=N[a],B=N[b];if(A[2]==&quot;r&quot;&amp;&amp;B[2]==&quot;r&quot;||B[2]==&quot;s&quot;&amp;&amp;a!=&quot;r1&quot;)return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+B[0]+&quot;,&quot;+B[1];if(a==&quot;r1&quot;)return &quot;M480,95L480,148L&quot;+B[0]+&quot;,148L&quot;+B[0]+&quot;,&quot;+B[1];return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+A[0]+&quot;,268L&quot;+B[0]+&quot;,268L&quot;+B[0]+&quot;,&quot;+B[1]}
+[[40,24,220,436,&quot;ŞUBE 1&quot;,&quot;10.1.1.0/24&quot;,150],[280,24,400,436,&quot;MERKEZ&quot;],[700,24,220,436,&quot;ŞUBE 2&quot;,&quot;10.2.1.0/24&quot;,810]].forEach(function(z){o+=&#x27;&lt;rect x=&quot;&#x27;+z[0]+&#x27;&quot; y=&quot;&#x27;+z[1]+&#x27;&quot; width=&quot;&#x27;+z[2]+&#x27;&quot; height=&quot;&#x27;+z[3]+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.l+&#x27;&quot; stroke-width=&quot;1.5&quot;/&gt;&#x27;+T(z[0]+12,z[1]+26,z[4],C.m,&quot;start&quot;,700);if(z[5])o+=T(z[6],450,z[5],C.d,0,0,1)});
+o+=T(370,450,&quot;10.0.1.0/24&quot;,C.d,0,0,1)+T(590,450,&quot;10.0.2.0/24&quot;,C.d,0,0,1)+T(315,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d)+T(645,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d);
+E.forEach(function(e){var a=e[0],b=e[1],w=N[a][2]==&quot;r&quot;&amp;&amp;N[b][2]==&quot;r&quot;,c=C.m,sw=w?3:1.6,da=&quot;&quot;,op=1;if(has(H.r,a,b)){c=C.r;sw=w?4:3.5;da=&#x27; stroke-dasharray=&quot;7 5&quot;&#x27;}else if(has(H.g,a,b)){c=C.g;sw=w?4:3.5}else if(has(H.e,a,b)){c=C.a;sw=w?4:3.5}else{if(w)c=C.i;if(D)op=.2}o+=&#x27;&lt;path d=&quot;&#x27;+P(a,b)+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+c+&#x27;&quot; stroke-width=&quot;&#x27;+sw+&#x27;&quot; stroke-linejoin=&quot;round&quot; opacity=&quot;&#x27;+op+&#x27;&quot;&#x27;+da+&#x27;/&gt;&#x27;});
+o+=&#x27;&lt;path d=&quot;M286,388L286,396L454,396L454,388&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.a+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(370,420,&quot;VIP 10.0.1.100&quot;,C.a,0,600,1);
+for(var k in N){var n=N[k],x=n[0],y=n[1],g=&#x27;&lt;g opacity=&quot;&#x27;+((!D||H.n.indexOf(k)&gt;=0)?1:.3)+&#x27;&quot;&gt;&#x27;;if(n[2]==&quot;r&quot;)g+=&#x27;&lt;circle cx=&quot;&#x27;+x+&#x27;&quot; cy=&quot;&#x27;+y+&#x27;&quot; r=&quot;24&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;2&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.i,0,700);else if(n[2]==&quot;s&quot;)g+=&#x27;&lt;rect x=&quot;&#x27;+(x-36)+&#x27;&quot; y=&quot;&#x27;+(y-16)+&#x27;&quot; width=&quot;72&quot; height=&quot;32&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.a+&#x27;&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.p,0,700);else{if(n[2]==&quot;v&quot;){g+=&#x27;&lt;rect x=&quot;&#x27;+(x-13)+&#x27;&quot; y=&quot;&#x27;+(y-18)+&#x27;&quot; width=&quot;26&quot; height=&quot;36&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;[-8,-1,6].forEach(function(d){g+=&#x27;&lt;line x1=&quot;&#x27;+(x-7)+&#x27;&quot; x2=&quot;&#x27;+(x+7)+&#x27;&quot; y1=&quot;&#x27;+(y+d)+&#x27;&quot; y2=&quot;&#x27;+(y+d)+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.4&quot;/&gt;&#x27;})}else g+=&#x27;&lt;rect x=&quot;&#x27;+(x-17)+&#x27;&quot; y=&quot;&#x27;+(y-14)+&#x27;&quot; width=&quot;34&quot; height=&quot;23&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;path d=&quot;M&#x27;+(x-8)+&#x27;,&#x27;+(y+15)+&#x27;h16M&#x27;+x+&#x27;,&#x27;+(y+9)+&#x27;v6&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;g+=T(x,y+40,k,C.i,0,600)+T(x,y+40+F,n[3],C.d,0,0,1)}o+=g+&#x27;&lt;/g&gt;&#x27;}
+if(H.x){var q=N[H.x];o+=&#x27;&lt;rect x=&quot;&#x27;+(q[0]-44)+&#x27;&quot; y=&quot;&#x27;+(q[1]-24)+&#x27;&quot; width=&quot;88&quot; height=&quot;48&quot; rx=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.r+&#x27;&quot; stroke-width=&quot;2.5&quot;/&gt;&#x27;}
+if(H.b){var m=N[H.b[0]],bc=H.b[2]==&quot;r&quot;?C.r:C.a,bw=H.b[1].length*F*.6+24,bx=m[0]+52;o+=&#x27;&lt;line x1=&quot;&#x27;+(m[0]+36)+&#x27;&quot; x2=&quot;&#x27;+bx+&#x27;&quot; y1=&quot;&#x27;+m[1]+&#x27;&quot; y2=&quot;&#x27;+m[1]+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;rect x=&quot;&#x27;+bx+&#x27;&quot; y=&quot;&#x27;+(m[1]-F*.85)+&#x27;&quot; width=&quot;&#x27;+bw+&#x27;&quot; height=&quot;&#x27;+F*1.7+&#x27;&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(bx+bw/2,m[1]+F*.35,H.b[1],bc,0,700)}
+document.getElementById(&quot;s&quot;).innerHTML=o;
+&lt;/script&gt;" frameborder="0" scrolling="no"></iframe>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Şimdi bir saldırı. Merkezdeki pc1, hping3 aracıyla sanal adrese saniyede 100 SYN, toplam 300 SYN gönderiyor ve hiçbir bağlantıyı tamamlamıyor. Her SYN yeni bir bağlantı olduğu için s2’nin tablosunda kuralı yok; s2 her birini POX’a soruyor. POX gönderen adrese, yani 10.0.2.11’e göre sayıyor ve son 5 saniyeye bakıyor. İlk 49 SYN eşiğin altında kaldığı için normal şekilde iletiliyor ve sunuculara kadar gidiyor. Kırmızı kesikli çizgi saldırı trafiği.</aside>
+</section>
+<section id="syn2" class="step" data-transition="fade">
+<p class="steptag red">SYN flood · 2 / 3</p>
+<h2>50. SYN’de alarm</h2>
+<p class="lede">5 saniyede 50 SYN birikince POX alarm veriyor ve s2’ye bir engel kuralı yazıyor: kaynağı 10.0.2.11 olan her paketi 60 saniye boyunca düşür.</p>
+<iframe style="position:absolute; left:128px; top:340px; width:1664px; height:580px" srcdoc="&lt;!doctype html&gt;&lt;meta charset=&#x27;utf-8&#x27;&gt;&lt;style&gt;html,body{margin:0;height:100%;background:transparent}svg{display:block;width:100%;height:100%;font-family:-apple-system,&quot;Helvetica Neue&quot;,Arial,sans-serif}&lt;/style&gt;&lt;svg id=&quot;s&quot; viewBox=&quot;0 0 960 470&quot;&gt;&lt;/svg&gt;&lt;script&gt;
+var H={e:[],r:[&quot;pc1-s2&quot;],g:[],n:[&quot;pc1&quot;,&quot;s2&quot;],b:[&quot;s2&quot;,&quot;DROP&quot;,&quot;r&quot;],x:&quot;s2&quot;,f:20};
+var C={i:&quot;#14171C&quot;,m:&quot;#868D99&quot;,d:&quot;#5E6573&quot;,a:&quot;#1F4FD1&quot;,r:&quot;#C4302B&quot;,g:&quot;#1C7A4E&quot;,p:&quot;#F7F8FA&quot;,l:&quot;#D8DCE2&quot;};
+var N={r2:[150,95,&quot;r&quot;],r1:[480,95,&quot;r&quot;],r3:[810,95,&quot;r&quot;],s3:[150,205,&quot;s&quot;],s1:[370,205,&quot;s&quot;],s2:[590,205,&quot;s&quot;],s4:[810,205,&quot;s&quot;],b1h1:[100,318,&quot;p&quot;,&quot;.11&quot;],b1h2:[200,318,&quot;p&quot;,&quot;.12&quot;],web1:[300,318,&quot;v&quot;,&quot;.11&quot;],web2:[370,318,&quot;v&quot;,&quot;.12&quot;],web3:[440,318,&quot;v&quot;,&quot;.13&quot;],pc1:[550,318,&quot;p&quot;,&quot;.11&quot;],pc2:[630,318,&quot;p&quot;,&quot;.12&quot;],b2h1:[760,318,&quot;p&quot;,&quot;.11&quot;],b2h2:[860,318,&quot;p&quot;,&quot;.12&quot;]};
+var E=[[&quot;r2&quot;,&quot;r1&quot;],[&quot;r1&quot;,&quot;r3&quot;],[&quot;r2&quot;,&quot;s3&quot;],[&quot;r3&quot;,&quot;s4&quot;],[&quot;r1&quot;,&quot;s1&quot;],[&quot;r1&quot;,&quot;s2&quot;],[&quot;s3&quot;,&quot;b1h1&quot;],[&quot;s3&quot;,&quot;b1h2&quot;],[&quot;s1&quot;,&quot;web1&quot;],[&quot;s1&quot;,&quot;web2&quot;],[&quot;s1&quot;,&quot;web3&quot;],[&quot;s2&quot;,&quot;pc1&quot;],[&quot;s2&quot;,&quot;pc2&quot;],[&quot;s4&quot;,&quot;b2h1&quot;],[&quot;s4&quot;,&quot;b2h2&quot;]];
+var F=H.f,D=H.e.length+H.r.length+H.g.length&gt;0,o=&quot;&quot;;
+function has(L,a,b){return L.indexOf(a+&quot;-&quot;+b)&gt;=0||L.indexOf(b+&quot;-&quot;+a)&gt;=0}
+function T(x,y,t,c,an,w,mono){return &#x27;&lt;text x=&quot;&#x27;+x+&#x27;&quot; y=&quot;&#x27;+y+&#x27;&quot; fill=&quot;&#x27;+c+&#x27;&quot; text-anchor=&quot;&#x27;+(an||&quot;middle&quot;)+&#x27;&quot; font-size=&quot;&#x27;+F+&#x27;&quot; font-weight=&quot;&#x27;+(w||400)+&#x27;&quot;&#x27;+(mono?&#x27; font-family=&quot;Menlo,Consolas,monospace&quot;&#x27;:&#x27;&#x27;)+&#x27;&gt;&#x27;+t+&#x27;&lt;/text&gt;&#x27;}
+function P(a,b){var A=N[a],B=N[b];if(A[2]==&quot;r&quot;&amp;&amp;B[2]==&quot;r&quot;||B[2]==&quot;s&quot;&amp;&amp;a!=&quot;r1&quot;)return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+B[0]+&quot;,&quot;+B[1];if(a==&quot;r1&quot;)return &quot;M480,95L480,148L&quot;+B[0]+&quot;,148L&quot;+B[0]+&quot;,&quot;+B[1];return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+A[0]+&quot;,268L&quot;+B[0]+&quot;,268L&quot;+B[0]+&quot;,&quot;+B[1]}
+[[40,24,220,436,&quot;ŞUBE 1&quot;,&quot;10.1.1.0/24&quot;,150],[280,24,400,436,&quot;MERKEZ&quot;],[700,24,220,436,&quot;ŞUBE 2&quot;,&quot;10.2.1.0/24&quot;,810]].forEach(function(z){o+=&#x27;&lt;rect x=&quot;&#x27;+z[0]+&#x27;&quot; y=&quot;&#x27;+z[1]+&#x27;&quot; width=&quot;&#x27;+z[2]+&#x27;&quot; height=&quot;&#x27;+z[3]+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.l+&#x27;&quot; stroke-width=&quot;1.5&quot;/&gt;&#x27;+T(z[0]+12,z[1]+26,z[4],C.m,&quot;start&quot;,700);if(z[5])o+=T(z[6],450,z[5],C.d,0,0,1)});
+o+=T(370,450,&quot;10.0.1.0/24&quot;,C.d,0,0,1)+T(590,450,&quot;10.0.2.0/24&quot;,C.d,0,0,1)+T(315,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d)+T(645,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d);
+E.forEach(function(e){var a=e[0],b=e[1],w=N[a][2]==&quot;r&quot;&amp;&amp;N[b][2]==&quot;r&quot;,c=C.m,sw=w?3:1.6,da=&quot;&quot;,op=1;if(has(H.r,a,b)){c=C.r;sw=w?4:3.5;da=&#x27; stroke-dasharray=&quot;7 5&quot;&#x27;}else if(has(H.g,a,b)){c=C.g;sw=w?4:3.5}else if(has(H.e,a,b)){c=C.a;sw=w?4:3.5}else{if(w)c=C.i;if(D)op=.2}o+=&#x27;&lt;path d=&quot;&#x27;+P(a,b)+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+c+&#x27;&quot; stroke-width=&quot;&#x27;+sw+&#x27;&quot; stroke-linejoin=&quot;round&quot; opacity=&quot;&#x27;+op+&#x27;&quot;&#x27;+da+&#x27;/&gt;&#x27;});
+o+=&#x27;&lt;path d=&quot;M286,388L286,396L454,396L454,388&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.a+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(370,420,&quot;VIP 10.0.1.100&quot;,C.a,0,600,1);
+for(var k in N){var n=N[k],x=n[0],y=n[1],g=&#x27;&lt;g opacity=&quot;&#x27;+((!D||H.n.indexOf(k)&gt;=0)?1:.3)+&#x27;&quot;&gt;&#x27;;if(n[2]==&quot;r&quot;)g+=&#x27;&lt;circle cx=&quot;&#x27;+x+&#x27;&quot; cy=&quot;&#x27;+y+&#x27;&quot; r=&quot;24&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;2&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.i,0,700);else if(n[2]==&quot;s&quot;)g+=&#x27;&lt;rect x=&quot;&#x27;+(x-36)+&#x27;&quot; y=&quot;&#x27;+(y-16)+&#x27;&quot; width=&quot;72&quot; height=&quot;32&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.a+&#x27;&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.p,0,700);else{if(n[2]==&quot;v&quot;){g+=&#x27;&lt;rect x=&quot;&#x27;+(x-13)+&#x27;&quot; y=&quot;&#x27;+(y-18)+&#x27;&quot; width=&quot;26&quot; height=&quot;36&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;[-8,-1,6].forEach(function(d){g+=&#x27;&lt;line x1=&quot;&#x27;+(x-7)+&#x27;&quot; x2=&quot;&#x27;+(x+7)+&#x27;&quot; y1=&quot;&#x27;+(y+d)+&#x27;&quot; y2=&quot;&#x27;+(y+d)+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.4&quot;/&gt;&#x27;})}else g+=&#x27;&lt;rect x=&quot;&#x27;+(x-17)+&#x27;&quot; y=&quot;&#x27;+(y-14)+&#x27;&quot; width=&quot;34&quot; height=&quot;23&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;path d=&quot;M&#x27;+(x-8)+&#x27;,&#x27;+(y+15)+&#x27;h16M&#x27;+x+&#x27;,&#x27;+(y+9)+&#x27;v6&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;g+=T(x,y+40,k,C.i,0,600)+T(x,y+40+F,n[3],C.d,0,0,1)}o+=g+&#x27;&lt;/g&gt;&#x27;}
+if(H.x){var q=N[H.x];o+=&#x27;&lt;rect x=&quot;&#x27;+(q[0]-44)+&#x27;&quot; y=&quot;&#x27;+(q[1]-24)+&#x27;&quot; width=&quot;88&quot; height=&quot;48&quot; rx=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.r+&#x27;&quot; stroke-width=&quot;2.5&quot;/&gt;&#x27;}
+if(H.b){var m=N[H.b[0]],bc=H.b[2]==&quot;r&quot;?C.r:C.a,bw=H.b[1].length*F*.6+24,bx=m[0]+52;o+=&#x27;&lt;line x1=&quot;&#x27;+(m[0]+36)+&#x27;&quot; x2=&quot;&#x27;+bx+&#x27;&quot; y1=&quot;&#x27;+m[1]+&#x27;&quot; y2=&quot;&#x27;+m[1]+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;rect x=&quot;&#x27;+bx+&#x27;&quot; y=&quot;&#x27;+(m[1]-F*.85)+&#x27;&quot; width=&quot;&#x27;+bw+&#x27;&quot; height=&quot;&#x27;+F*1.7+&#x27;&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(bx+bw/2,m[1]+F*.35,H.b[1],bc,0,700)}
+document.getElementById(&quot;s&quot;).innerHTML=o;
+&lt;/script&gt;" frameborder="0" scrolling="no"></iframe>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>50. SYN geldiğinde 5 saniyelik pencerede 50 SYN birikmiş oluyor ve eşik aşılıyor. POX’un logunda şu satır çıkıyor: ALARM, switch s2, kaynak 10.0.2.11, SYN FLOOD, 50 SYN, 5 saniye, 60 saniye engellendi. POX s2’ye bir kural yazıyor: kaynağı 10.0.2.11 olan her IP paketini 60 saniye boyunca düşür. Kural saldırganın paketini ilk gören switch’e, yani pc1’in bağlı olduğu s2’ye yazılıyor; saldırgan ağın girişinde durduruluyor.</aside>
+</section>
+<section id="syn3" class="step">
+<p class="steptag red">SYN flood · 3 / 3</p>
+<h2>Saldırgan kapıda kalıyor</h2>
+<p class="lede">Kalan 250 SYN s2’de, POX’a bile sorulmadan düşüyor. Sunuculara ve POX’a yük binmiyor; aynı ağdaki pc2 web sitesini normal şekilde açmaya devam ediyor.</p>
+<iframe style="position:absolute; left:128px; top:340px; width:1664px; height:580px" srcdoc="&lt;!doctype html&gt;&lt;meta charset=&#x27;utf-8&#x27;&gt;&lt;style&gt;html,body{margin:0;height:100%;background:transparent}svg{display:block;width:100%;height:100%;font-family:-apple-system,&quot;Helvetica Neue&quot;,Arial,sans-serif}&lt;/style&gt;&lt;svg id=&quot;s&quot; viewBox=&quot;0 0 960 470&quot;&gt;&lt;/svg&gt;&lt;script&gt;
+var H={e:[],r:[&quot;pc1-s2&quot;],g:[&quot;pc2-s2&quot;,&quot;r1-s2&quot;,&quot;r1-s1&quot;,&quot;s1-web1&quot;],n:[&quot;pc1&quot;,&quot;pc2&quot;,&quot;s2&quot;,&quot;r1&quot;,&quot;s1&quot;,&quot;web1&quot;],b:[&quot;s2&quot;,&quot;DROP&quot;,&quot;r&quot;],x:&quot;s2&quot;,f:20};
+var C={i:&quot;#14171C&quot;,m:&quot;#868D99&quot;,d:&quot;#5E6573&quot;,a:&quot;#1F4FD1&quot;,r:&quot;#C4302B&quot;,g:&quot;#1C7A4E&quot;,p:&quot;#F7F8FA&quot;,l:&quot;#D8DCE2&quot;};
+var N={r2:[150,95,&quot;r&quot;],r1:[480,95,&quot;r&quot;],r3:[810,95,&quot;r&quot;],s3:[150,205,&quot;s&quot;],s1:[370,205,&quot;s&quot;],s2:[590,205,&quot;s&quot;],s4:[810,205,&quot;s&quot;],b1h1:[100,318,&quot;p&quot;,&quot;.11&quot;],b1h2:[200,318,&quot;p&quot;,&quot;.12&quot;],web1:[300,318,&quot;v&quot;,&quot;.11&quot;],web2:[370,318,&quot;v&quot;,&quot;.12&quot;],web3:[440,318,&quot;v&quot;,&quot;.13&quot;],pc1:[550,318,&quot;p&quot;,&quot;.11&quot;],pc2:[630,318,&quot;p&quot;,&quot;.12&quot;],b2h1:[760,318,&quot;p&quot;,&quot;.11&quot;],b2h2:[860,318,&quot;p&quot;,&quot;.12&quot;]};
+var E=[[&quot;r2&quot;,&quot;r1&quot;],[&quot;r1&quot;,&quot;r3&quot;],[&quot;r2&quot;,&quot;s3&quot;],[&quot;r3&quot;,&quot;s4&quot;],[&quot;r1&quot;,&quot;s1&quot;],[&quot;r1&quot;,&quot;s2&quot;],[&quot;s3&quot;,&quot;b1h1&quot;],[&quot;s3&quot;,&quot;b1h2&quot;],[&quot;s1&quot;,&quot;web1&quot;],[&quot;s1&quot;,&quot;web2&quot;],[&quot;s1&quot;,&quot;web3&quot;],[&quot;s2&quot;,&quot;pc1&quot;],[&quot;s2&quot;,&quot;pc2&quot;],[&quot;s4&quot;,&quot;b2h1&quot;],[&quot;s4&quot;,&quot;b2h2&quot;]];
+var F=H.f,D=H.e.length+H.r.length+H.g.length&gt;0,o=&quot;&quot;;
+function has(L,a,b){return L.indexOf(a+&quot;-&quot;+b)&gt;=0||L.indexOf(b+&quot;-&quot;+a)&gt;=0}
+function T(x,y,t,c,an,w,mono){return &#x27;&lt;text x=&quot;&#x27;+x+&#x27;&quot; y=&quot;&#x27;+y+&#x27;&quot; fill=&quot;&#x27;+c+&#x27;&quot; text-anchor=&quot;&#x27;+(an||&quot;middle&quot;)+&#x27;&quot; font-size=&quot;&#x27;+F+&#x27;&quot; font-weight=&quot;&#x27;+(w||400)+&#x27;&quot;&#x27;+(mono?&#x27; font-family=&quot;Menlo,Consolas,monospace&quot;&#x27;:&#x27;&#x27;)+&#x27;&gt;&#x27;+t+&#x27;&lt;/text&gt;&#x27;}
+function P(a,b){var A=N[a],B=N[b];if(A[2]==&quot;r&quot;&amp;&amp;B[2]==&quot;r&quot;||B[2]==&quot;s&quot;&amp;&amp;a!=&quot;r1&quot;)return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+B[0]+&quot;,&quot;+B[1];if(a==&quot;r1&quot;)return &quot;M480,95L480,148L&quot;+B[0]+&quot;,148L&quot;+B[0]+&quot;,&quot;+B[1];return &quot;M&quot;+A[0]+&quot;,&quot;+A[1]+&quot;L&quot;+A[0]+&quot;,268L&quot;+B[0]+&quot;,268L&quot;+B[0]+&quot;,&quot;+B[1]}
+[[40,24,220,436,&quot;ŞUBE 1&quot;,&quot;10.1.1.0/24&quot;,150],[280,24,400,436,&quot;MERKEZ&quot;],[700,24,220,436,&quot;ŞUBE 2&quot;,&quot;10.2.1.0/24&quot;,810]].forEach(function(z){o+=&#x27;&lt;rect x=&quot;&#x27;+z[0]+&#x27;&quot; y=&quot;&#x27;+z[1]+&#x27;&quot; width=&quot;&#x27;+z[2]+&#x27;&quot; height=&quot;&#x27;+z[3]+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.l+&#x27;&quot; stroke-width=&quot;1.5&quot;/&gt;&#x27;+T(z[0]+12,z[1]+26,z[4],C.m,&quot;start&quot;,700);if(z[5])o+=T(z[6],450,z[5],C.d,0,0,1)});
+o+=T(370,450,&quot;10.0.1.0/24&quot;,C.d,0,0,1)+T(590,450,&quot;10.0.2.0/24&quot;,C.d,0,0,1)+T(315,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d)+T(645,82,&quot;WAN · 10 Mbit/s · 20 ms&quot;,C.d);
+E.forEach(function(e){var a=e[0],b=e[1],w=N[a][2]==&quot;r&quot;&amp;&amp;N[b][2]==&quot;r&quot;,c=C.m,sw=w?3:1.6,da=&quot;&quot;,op=1;if(has(H.r,a,b)){c=C.r;sw=w?4:3.5;da=&#x27; stroke-dasharray=&quot;7 5&quot;&#x27;}else if(has(H.g,a,b)){c=C.g;sw=w?4:3.5}else if(has(H.e,a,b)){c=C.a;sw=w?4:3.5}else{if(w)c=C.i;if(D)op=.2}o+=&#x27;&lt;path d=&quot;&#x27;+P(a,b)+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+c+&#x27;&quot; stroke-width=&quot;&#x27;+sw+&#x27;&quot; stroke-linejoin=&quot;round&quot; opacity=&quot;&#x27;+op+&#x27;&quot;&#x27;+da+&#x27;/&gt;&#x27;});
+o+=&#x27;&lt;path d=&quot;M286,388L286,396L454,396L454,388&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.a+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(370,420,&quot;VIP 10.0.1.100&quot;,C.a,0,600,1);
+for(var k in N){var n=N[k],x=n[0],y=n[1],g=&#x27;&lt;g opacity=&quot;&#x27;+((!D||H.n.indexOf(k)&gt;=0)?1:.3)+&#x27;&quot;&gt;&#x27;;if(n[2]==&quot;r&quot;)g+=&#x27;&lt;circle cx=&quot;&#x27;+x+&#x27;&quot; cy=&quot;&#x27;+y+&#x27;&quot; r=&quot;24&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;2&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.i,0,700);else if(n[2]==&quot;s&quot;)g+=&#x27;&lt;rect x=&quot;&#x27;+(x-36)+&#x27;&quot; y=&quot;&#x27;+(y-16)+&#x27;&quot; width=&quot;72&quot; height=&quot;32&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.a+&#x27;&quot;/&gt;&#x27;+T(x,y+F*.35,k,C.p,0,700);else{if(n[2]==&quot;v&quot;){g+=&#x27;&lt;rect x=&quot;&#x27;+(x-13)+&#x27;&quot; y=&quot;&#x27;+(y-18)+&#x27;&quot; width=&quot;26&quot; height=&quot;36&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;[-8,-1,6].forEach(function(d){g+=&#x27;&lt;line x1=&quot;&#x27;+(x-7)+&#x27;&quot; x2=&quot;&#x27;+(x+7)+&#x27;&quot; y1=&quot;&#x27;+(y+d)+&#x27;&quot; y2=&quot;&#x27;+(y+d)+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.4&quot;/&gt;&#x27;})}else g+=&#x27;&lt;rect x=&quot;&#x27;+(x-17)+&#x27;&quot; y=&quot;&#x27;+(y-14)+&#x27;&quot; width=&quot;34&quot; height=&quot;23&quot; rx=&quot;2&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;path d=&quot;M&#x27;+(x-8)+&#x27;,&#x27;+(y+15)+&#x27;h16M&#x27;+x+&#x27;,&#x27;+(y+9)+&#x27;v6&quot; stroke=&quot;&#x27;+C.i+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;;g+=T(x,y+40,k,C.i,0,600)+T(x,y+40+F,n[3],C.d,0,0,1)}o+=g+&#x27;&lt;/g&gt;&#x27;}
+if(H.x){var q=N[H.x];o+=&#x27;&lt;rect x=&quot;&#x27;+(q[0]-44)+&#x27;&quot; y=&quot;&#x27;+(q[1]-24)+&#x27;&quot; width=&quot;88&quot; height=&quot;48&quot; rx=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.r+&#x27;&quot; stroke-width=&quot;2.5&quot;/&gt;&#x27;}
+if(H.b){var m=N[H.b[0]],bc=H.b[2]==&quot;r&quot;?C.r:C.a,bw=H.b[1].length*F*.6+24,bx=m[0]+52;o+=&#x27;&lt;line x1=&quot;&#x27;+(m[0]+36)+&#x27;&quot; x2=&quot;&#x27;+bx+&#x27;&quot; y1=&quot;&#x27;+m[1]+&#x27;&quot; y2=&quot;&#x27;+m[1]+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&lt;rect x=&quot;&#x27;+bx+&#x27;&quot; y=&quot;&#x27;+(m[1]-F*.85)+&#x27;&quot; width=&quot;&#x27;+bw+&#x27;&quot; height=&quot;&#x27;+F*1.7+&#x27;&quot; rx=&quot;3&quot; fill=&quot;&#x27;+C.p+&#x27;&quot; stroke=&quot;&#x27;+bc+&#x27;&quot; stroke-width=&quot;1.6&quot;/&gt;&#x27;+T(bx+bw/2,m[1]+F*.35,H.b[1],bc,0,700)}
+document.getElementById(&quot;s&quot;).innerHTML=o;
+&lt;/script&gt;" frameborder="0" scrolling="no"></iframe>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Engel kuralı yazıldıktan sonra kalan 250 SYN s2’de, POX’a bile sorulmadan düşüyor. Ne merkez router’a ne sunuculara ne de POX’a yük biniyor. Yeşil çizgi pc2’nin normal trafiği: aynı ağda olmasına rağmen web sitesini açmaya devam ediyor, çünkü engel sadece saldırganın adresine uygulanıyor. Ölçümde 300 SYN’den 49’u geçti, 250’si switch’te düştü ve pc2 hiç etkilenmedi. Port taraması da aynı şekilde çalışıyor: 10 saniyede 10 farklı port denendiğinde saldırgan engelleniyor.</aside>
+</section>
+<section id="kornokta" class="alt">
+<h2>Gözden kaçan saldırı</h2>
+<p class="lede">Tespit kodu doğruydu ama kuralların yazılma biçimi saldırıyı POX’tan saklıyordu. Bunu ölçüm sırasında fark ettik.</p>
+<div class="cols2" style="flex:1">
+<div class="col red"><p class="label" style="color:#C4302B">Önce</p><h3>Cihaz çifti başına kural</h3><div class="code"><p>dl_src=b1h2, dl_dst=web1 → output</p></div><p>“Bu iki cihaz arasındaki her şeyi geçir.” Kural bir kez yazılınca yeni SYN’ler POX’a hiç uğramadı. Sunucuya doğrudan tarama alarm vermedi, 80/tcp açık bulundu.</p></div>
+<div class="col blue"><p class="label" style="color:#1F4FD1">Sonra</p><h3>Bağlantı başına kural</h3><div class="code"><p>IP + port eşleşmesi (from_packet) → output</p></div><p>Her yeni bağlantının ilk paketi POX’a uğruyor. Tarama yakalandı, 0 port bulundu. Aynı SYN her switch’ten ayrı geldiği için bağlantıyı bir kez sayan kontrol eklendi.</p></div>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Projenin en öğretici kısmı burası. İlk sürümde normal kurallar cihaz çifti başına yazılıyordu: şu iki MAC adresi arasındaki her şeyi geçir. Ölçümde fark ettik ki iki cihaz arasında bir kez kural yazıldıktan sonra yeni SYN paketleri POX’a hiç uğramıyor, tablodaki kuralla geçiyor. Bir şube kullanıcısı sunucuya doğrudan port taraması yaptığında hiçbir alarm çalmadı ve açık 80 portunu buldu. Çözüm olarak kuralları bağlantı başına, yani IP ve port eşleşmesiyle yazmaya geçtik. Artık her yeni bağlantının ilk paketi POX’a uğruyor ve tarama yakalanıyor. Bunun da bir yan etkisi çıktı: aynı SYN yoldaki her switch’ten ayrı ayrı geldiği için iki kez sayılıyordu; aynı bağlantıyı bir kez sayan bir kontrol ekledik.</aside>
+</section>
+<section id="seq1">
+<h2>Sıra diyagramı: sanal adrese ilk bağlantı</h2>
+<iframe style="position:absolute; left:128px; top:236px; width:1664px; height:684px" srcdoc="&lt;!doctype html&gt;&lt;meta charset=&#x27;utf-8&#x27;&gt;&lt;style&gt;html,body{margin:0;height:100%;background:transparent}svg{display:block;width:100%;height:100%;font-family:-apple-system,&quot;Helvetica Neue&quot;,Arial,sans-serif}&lt;/style&gt;&lt;svg id=&quot;s&quot; viewBox=&quot;0 0 1664 684&quot;&gt;&lt;/svg&gt;&lt;script&gt;
+var P=[[&quot;C&quot;,&quot;Kullanıcı b1h1&quot;,130],[&quot;R&quot;,&quot;r1 router&quot;,480],[&quot;S&quot;,&quot;s1 switch&quot;,830],[&quot;X&quot;,&quot;POX&quot;,1180],[&quot;W&quot;,&quot;web2&quot;,1530]];
+var R=[[&quot;C&quot;,&quot;R&quot;,&quot;TCP SYN, hedef 10.0.1.100&quot;],[&quot;R&quot;,&quot;S&quot;,&quot;ARP: 10.0.1.100 kimde?&quot;],[&quot;S&quot;,&quot;X&quot;,&quot;packet-in (ARP)&quot;],[&quot;X&quot;,&quot;S&quot;,&quot;packet-out: 02:00:00:00:01:00&quot;,&quot;a&quot;],[&quot;S&quot;,&quot;R&quot;,&quot;ARP cevabı&quot;],[&quot;R&quot;,&quot;S&quot;,&quot;TCP SYN&quot;],[&quot;S&quot;,&quot;X&quot;,&quot;packet-in, kural yok&quot;],[&quot;X&quot;,&quot;&quot;,&quot;Round robin: sıradaki web2&quot;,&quot;a&quot;],[&quot;X&quot;,&quot;S&quot;,&quot;flow-mod: gidiş ve dönüş&quot;,&quot;a&quot;],[&quot;S&quot;,&quot;W&quot;,&quot;SYN, hedef 10.0.1.12&quot;],[&quot;W&quot;,&quot;S&quot;,&quot;SYN+ACK&quot;],[&quot;S&quot;,&quot;R&quot;,&quot;SYN+ACK, kaynak 10.0.1.100&quot;],[&quot;R&quot;,&quot;C&quot;,&quot;SYN+ACK&quot;]];
+var L=[],Y0=106,ST=44;
+var C={i:&quot;#14171C&quot;,d:&quot;#4E5562&quot;,m:&quot;#868D99&quot;,a:&quot;#1F4FD1&quot;,r:&quot;#C4302B&quot;,p:&quot;#F7F8FA&quot;,w:&quot;#E6ECFB&quot;,rw:&quot;#FBE9E8&quot;};
+function mk(id,c){return &#x27;&lt;marker id=&quot;&#x27;+id+&#x27;&quot; orient=&quot;auto&quot; markerWidth=&quot;12&quot; markerHeight=&quot;12&quot; refX=&quot;11&quot; refY=&quot;6&quot; markerUnits=&quot;userSpaceOnUse&quot;&gt;&lt;path d=&quot;M0,0L12,6L0,12z&quot; fill=&quot;&#x27;+c+&#x27;&quot;/&gt;&lt;/marker&gt;&#x27;}
+var X={},o=&#x27;&lt;defs&gt;&#x27;+mk(&quot;h&quot;,C.i)+mk(&quot;ha&quot;,C.a)+mk(&quot;hr&quot;,C.r)+&#x27;&lt;/defs&gt;&#x27;;
+L.forEach(function(l){var a=Y0+l[0]*ST-34,b=Y0+l[1]*ST+16;o+=&#x27;&lt;rect x=&quot;24&quot; y=&quot;&#x27;+a+&#x27;&quot; width=&quot;1616&quot; height=&quot;&#x27;+(b-a)+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.m+&#x27;&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;text x=&quot;40&quot; y=&quot;&#x27;+(a+30)+&#x27;&quot; font-size=&quot;24&quot; font-weight=&quot;700&quot; fill=&quot;&#x27;+C.d+&#x27;&quot;&gt;&#x27;+l[2]+&#x27;&lt;/text&gt;&#x27;});
+P.forEach(function(p){X[p[0]]=p[2];var c=p[0]==&quot;X&quot;?C.a:C.i;o+=&#x27;&lt;line x1=&quot;&#x27;+p[2]+&#x27;&quot; x2=&quot;&#x27;+p[2]+&#x27;&quot; y1=&quot;62&quot; y2=&quot;680&quot; stroke=&quot;&#x27;+C.m+&#x27;&quot; stroke-width=&quot;1.5&quot; stroke-dasharray=&quot;6 6&quot;/&gt;&lt;rect x=&quot;&#x27;+(p[2]-150)+&#x27;&quot; y=&quot;6&quot; width=&quot;300&quot; height=&quot;56&quot; rx=&quot;4&quot; fill=&quot;&#x27;+(p[0]==&quot;X&quot;?C.w:C.p)+&#x27;&quot; stroke=&quot;&#x27;+c+&#x27;&quot; stroke-width=&quot;2&quot;/&gt;&lt;text x=&quot;&#x27;+p[2]+&#x27;&quot; y=&quot;43&quot; text-anchor=&quot;middle&quot; font-size=&quot;26&quot; font-weight=&quot;700&quot; fill=&quot;&#x27;+c+&#x27;&quot;&gt;&#x27;+p[1]+&#x27;&lt;/text&gt;&#x27;});
+R.forEach(function(r,i){var y=Y0+i*ST,t=r[3],c=t==&quot;r&quot;?C.r:(t==&quot;a&quot;?C.a:C.i),m=t==&quot;r&quot;?&quot;hr&quot;:(t==&quot;a&quot;?&quot;ha&quot;:&quot;h&quot;);if(!r[1]){var w=r[2].length*13+40;o+=&#x27;&lt;rect x=&quot;&#x27;+(X[r[0]]-w/2)+&#x27;&quot; y=&quot;&#x27;+(y-28)+&#x27;&quot; width=&quot;&#x27;+w+&#x27;&quot; height=&quot;40&quot; rx=&quot;3&quot; fill=&quot;&#x27;+(t==&quot;r&quot;?C.rw:C.w)+&#x27;&quot; stroke=&quot;&#x27;+c+&#x27;&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;text x=&quot;&#x27;+X[r[0]]+&#x27;&quot; y=&quot;&#x27;+(y+1)+&#x27;&quot; text-anchor=&quot;middle&quot; font-size=&quot;24&quot; fill=&quot;&#x27;+c+&#x27;&quot;&gt;&#x27;+r[2]+&#x27;&lt;/text&gt;&#x27;;return}var x1=X[r[0]],x2=X[r[1]],d=x2&gt;x1?1:-1;o+=&#x27;&lt;line x1=&quot;&#x27;+x1+&#x27;&quot; x2=&quot;&#x27;+(x2-d*2)+&#x27;&quot; y1=&quot;&#x27;+y+&#x27;&quot; y2=&quot;&#x27;+y+&#x27;&quot; stroke=&quot;&#x27;+c+&#x27;&quot; stroke-width=&quot;2.5&quot; marker-end=&quot;url(#&#x27;+m+&#x27;)&quot;/&gt;&lt;text x=&quot;&#x27;+(x1+x2)/2+&#x27;&quot; y=&quot;&#x27;+(y-10)+&#x27;&quot; text-anchor=&quot;middle&quot; font-size=&quot;24&quot; fill=&quot;&#x27;+c+&#x27;&quot;&gt;&#x27;+r[2]+&#x27;&lt;/text&gt;&#x27;});
+document.getElementById(&quot;s&quot;).innerHTML=o;
+&lt;/script&gt;" frameborder="0" scrolling="no"></iframe>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Ödevde raporda UML sıra diyagramı isteniyordu. Bu birincisi: bir kullanıcının sanal adrese ilk bağlanması. Yukarıdan aşağı zaman akıyor. Kullanıcı SYN gönderiyor; r1 sanal adresin MAC’ini soruyor; s1 bu soruyu POX’a iletiyor; POX packet-out ile sahte MAC’i cevaplıyor. Sonra SYN s1’e geliyor, kural yok, POX’a soruluyor. POX round robin ile web2’yi seçiyor ve iki flow-mod ile gidiş ve dönüş kurallarını yazıyor. SYN web2’ye gidiyor, cevap SYN+ACK kaynağı sanal adrese çevrilerek kullanıcıya dönüyor. Bundan sonraki paketler POX’a sorulmadan kurallarla gidiyor. Mavi oklar POX’un aktif rol aldığı adımlar.</aside>
+</section>
+<section id="seq2">
+<h2>Sıra diyagramı: SYN flood engelleme</h2>
+<iframe style="position:absolute; left:128px; top:236px; width:1664px; height:684px" srcdoc="&lt;!doctype html&gt;&lt;meta charset=&#x27;utf-8&#x27;&gt;&lt;style&gt;html,body{margin:0;height:100%;background:transparent}svg{display:block;width:100%;height:100%;font-family:-apple-system,&quot;Helvetica Neue&quot;,Arial,sans-serif}&lt;/style&gt;&lt;svg id=&quot;s&quot; viewBox=&quot;0 0 1664 684&quot;&gt;&lt;/svg&gt;&lt;script&gt;
+var P=[[&quot;A&quot;,&quot;Saldırgan pc1&quot;,260],[&quot;S&quot;,&quot;s2 switch&quot;,830],[&quot;X&quot;,&quot;POX&quot;,1400]];
+var R=[[&quot;A&quot;,&quot;S&quot;,&quot;TCP SYN&quot;],[&quot;S&quot;,&quot;X&quot;,&quot;packet-in&quot;],[&quot;X&quot;,&quot;&quot;,&quot;sayaç artar, eşik altında&quot;,&quot;a&quot;],[&quot;X&quot;,&quot;S&quot;,&quot;flow-mod, paket iletilir&quot;,&quot;a&quot;],[&quot;A&quot;,&quot;S&quot;,&quot;SYN 50&quot;],[&quot;S&quot;,&quot;X&quot;,&quot;packet-in&quot;],[&quot;X&quot;,&quot;&quot;,&quot;5 sn içinde 50 SYN: ALARM&quot;,&quot;r&quot;],[&quot;X&quot;,&quot;S&quot;,&quot;flow-mod: nw_src=10.0.2.11, drop, 60 sn&quot;,&quot;r&quot;],[&quot;A&quot;,&quot;S&quot;,&quot;TCP SYN&quot;,&quot;r&quot;],[&quot;S&quot;,&quot;&quot;,&quot;Engel kuralı eşleşir, paket düşer; POX’a gitmez&quot;,&quot;r&quot;]];
+var L=[[0,3,&quot;döngü: SYN 1–49&quot;],[8,9,&quot;döngü: SYN 51–300&quot;]],Y0=130,ST=56;
+var C={i:&quot;#14171C&quot;,d:&quot;#4E5562&quot;,m:&quot;#868D99&quot;,a:&quot;#1F4FD1&quot;,r:&quot;#C4302B&quot;,p:&quot;#F7F8FA&quot;,w:&quot;#E6ECFB&quot;,rw:&quot;#FBE9E8&quot;};
+function mk(id,c){return &#x27;&lt;marker id=&quot;&#x27;+id+&#x27;&quot; orient=&quot;auto&quot; markerWidth=&quot;12&quot; markerHeight=&quot;12&quot; refX=&quot;11&quot; refY=&quot;6&quot; markerUnits=&quot;userSpaceOnUse&quot;&gt;&lt;path d=&quot;M0,0L12,6L0,12z&quot; fill=&quot;&#x27;+c+&#x27;&quot;/&gt;&lt;/marker&gt;&#x27;}
+var X={},o=&#x27;&lt;defs&gt;&#x27;+mk(&quot;h&quot;,C.i)+mk(&quot;ha&quot;,C.a)+mk(&quot;hr&quot;,C.r)+&#x27;&lt;/defs&gt;&#x27;;
+L.forEach(function(l){var a=Y0+l[0]*ST-38,b=Y0+l[1]*ST+20;o+=&#x27;&lt;rect x=&quot;24&quot; y=&quot;&#x27;+a+&#x27;&quot; width=&quot;1616&quot; height=&quot;&#x27;+(b-a)+&#x27;&quot; fill=&quot;none&quot; stroke=&quot;&#x27;+C.m+&#x27;&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;text x=&quot;40&quot; y=&quot;&#x27;+(a+30)+&#x27;&quot; font-size=&quot;24&quot; font-weight=&quot;700&quot; fill=&quot;&#x27;+C.d+&#x27;&quot;&gt;&#x27;+l[2]+&#x27;&lt;/text&gt;&#x27;});
+P.forEach(function(p){X[p[0]]=p[2];var c=p[0]==&quot;X&quot;?C.a:C.i;o+=&#x27;&lt;line x1=&quot;&#x27;+p[2]+&#x27;&quot; x2=&quot;&#x27;+p[2]+&#x27;&quot; y1=&quot;62&quot; y2=&quot;680&quot; stroke=&quot;&#x27;+C.m+&#x27;&quot; stroke-width=&quot;1.5&quot; stroke-dasharray=&quot;6 6&quot;/&gt;&lt;rect x=&quot;&#x27;+(p[2]-150)+&#x27;&quot; y=&quot;6&quot; width=&quot;300&quot; height=&quot;56&quot; rx=&quot;4&quot; fill=&quot;&#x27;+(p[0]==&quot;X&quot;?C.w:C.p)+&#x27;&quot; stroke=&quot;&#x27;+c+&#x27;&quot; stroke-width=&quot;2&quot;/&gt;&lt;text x=&quot;&#x27;+p[2]+&#x27;&quot; y=&quot;43&quot; text-anchor=&quot;middle&quot; font-size=&quot;26&quot; font-weight=&quot;700&quot; fill=&quot;&#x27;+c+&#x27;&quot;&gt;&#x27;+p[1]+&#x27;&lt;/text&gt;&#x27;});
+R.forEach(function(r,i){var y=Y0+i*ST,t=r[3],c=t==&quot;r&quot;?C.r:(t==&quot;a&quot;?C.a:C.i),m=t==&quot;r&quot;?&quot;hr&quot;:(t==&quot;a&quot;?&quot;ha&quot;:&quot;h&quot;);if(!r[1]){var w=r[2].length*13+40;o+=&#x27;&lt;rect x=&quot;&#x27;+(X[r[0]]-w/2)+&#x27;&quot; y=&quot;&#x27;+(y-28)+&#x27;&quot; width=&quot;&#x27;+w+&#x27;&quot; height=&quot;40&quot; rx=&quot;3&quot; fill=&quot;&#x27;+(t==&quot;r&quot;?C.rw:C.w)+&#x27;&quot; stroke=&quot;&#x27;+c+&#x27;&quot; stroke-width=&quot;1.5&quot;/&gt;&lt;text x=&quot;&#x27;+X[r[0]]+&#x27;&quot; y=&quot;&#x27;+(y+1)+&#x27;&quot; text-anchor=&quot;middle&quot; font-size=&quot;24&quot; fill=&quot;&#x27;+c+&#x27;&quot;&gt;&#x27;+r[2]+&#x27;&lt;/text&gt;&#x27;;return}var x1=X[r[0]],x2=X[r[1]],d=x2&gt;x1?1:-1;o+=&#x27;&lt;line x1=&quot;&#x27;+x1+&#x27;&quot; x2=&quot;&#x27;+(x2-d*2)+&#x27;&quot; y1=&quot;&#x27;+y+&#x27;&quot; y2=&quot;&#x27;+y+&#x27;&quot; stroke=&quot;&#x27;+c+&#x27;&quot; stroke-width=&quot;2.5&quot; marker-end=&quot;url(#&#x27;+m+&#x27;)&quot;/&gt;&lt;text x=&quot;&#x27;+(x1+x2)/2+&#x27;&quot; y=&quot;&#x27;+(y-10)+&#x27;&quot; text-anchor=&quot;middle&quot; font-size=&quot;24&quot; fill=&quot;&#x27;+c+&#x27;&quot;&gt;&#x27;+r[2]+&#x27;&lt;/text&gt;&#x27;});
+document.getElementById(&quot;s&quot;).innerHTML=o;
+&lt;/script&gt;" frameborder="0" scrolling="no"></iframe>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>İkinci sıra diyagramı SYN flood’un engellenmesi. Üstteki döngüde ilk 49 SYN için aynı şey tekrarlanıyor: SYN s2’ye geliyor, s2 POX’a soruyor, POX sayacı artırıyor, eşik altında olduğu için paketi iletiyor. 50. SYN’de POX 5 saniyede 50 SYN gördüğü için alarm veriyor ve s2’ye drop kuralı yazıyor. Alttaki döngüde kalan SYN’ler engel kuralına takılıp s2’de düşüyor; POX’a hiç haber gitmiyor.</aside>
+</section>
+<section id="olcum">
+<h2>Ölçümler: korumasız ve korumalı</h2>
+<div style="display:flex; gap:80px; flex:1">
+<div class="bars" style="flex:1">
+<div class="metric rise" style="--i:0"><p class="mt">SYN flood: cevaplanan SYN (300 gönderildi)</p>
+<div class="bar"><p class="who">Korumasız</p><div class="track"><div class="fill" style="width:100%"></div></div><p class="num">300</p></div>
+<div class="bar"><p class="who">Korumalı</p><div class="track"><div class="fill on" style="width:16.3%"></div></div><p class="num">49</p></div></div>
+<div class="metric rise" style="--i:1"><p class="mt">SYN flood: switch tablosunun en yüksek boyutu</p>
+<div class="bar"><p class="who">Korumasız</p><div class="track"><div class="fill" style="width:100%"></div></div><p class="num">602</p></div>
+<div class="bar"><p class="who">Korumalı</p><div class="track"><div class="fill on" style="width:32.7%"></div></div><p class="num">197</p></div></div>
+<div class="metric rise" style="--i:2"><p class="mt">Port taraması: keşfedilen port (iki senaryoda da)</p>
+<div class="bar"><p class="who">Korumasız</p><div class="track"><div class="fill" style="width:100%"></div></div><p class="num">100</p></div>
+<div class="bar"><p class="who">Korumalı</p><div class="track"><div class="fill on" style="width:0%"></div></div><p class="num">0</p></div></div>
+</div>
+<div style="width:440px; display:flex; flex-direction:column; gap:48px">
+<div class="stat"><p class="big" style="font-size:64px">20 / 20 / 20</p><p class="small">Normal trafikte 60 istek üç sunucuya eşit dağıldı, hiçbiri başarısız olmadı.</p></div>
+<div class="stat"><p class="big" style="font-size:64px">250</p><p class="small">SYN switch’te düştü. Saldırı sürerken pc2 hizmet almaya devam etti.</p></div>
+</div>
+</div>
+<p class="foot">Aynı betik (senaryo.py) önce korumasız, sonra korumalı denetleyiciyle çalıştırıldı</p>
+<p class="pg"></p>
+<aside>Dört senaryoyu tek bir betikle iki kez çalıştırdık: önce sadece yük dengeleme yapan korumasız denetleyiciyle, sonra anomali tespiti de eklenmiş korumalı denetleyiciyle. Betik ağı kendisi kuruyor, trafiği üretiyor ve switch tablolarını senaryo sürerken saniyede üç kez okuyor. Sonuçlar: SYN flood’da korumasız sistemde 300 SYN’in hepsi cevaplandı, korumalıda sadece 49’u; 250’si switch’te düştü. Switch tablosu 602 kural yerine 197’de kaldı, yaklaşık üçte bir. Port taramalarında korumasız sistemde saldırgan bütün portları ve açık 80 portunu gördü, korumalıda hiçbir port bulamadı. Normal trafikte yük tam eşit dağıldı. Korumalı sürüm normal trafikte 3 ile 9 ms daha yavaş göründü; tek ölçüm olduğu için kesin bir fark saymıyoruz, muhtemel sebep her yeni bağlantının ilk paketinin POX’a gidip gelmesi. Ölçümü 17 Kasım’da baştan tekrar çalıştırdık, aynı sonuçları aldık.</aside>
+</section>
+<section id="sorunlar" class="alt">
+<h2>Yolda çıkan sorunlar</h2>
+<table class="tbl s24">
+<tr><th style="width:34%">Ne oldu</th><th style="width:38%">Neden</th><th>Nasıl çözdük</th></tr>
+<tr><td>Cevap sanal adrese çevrilmeden gitti</td><td>Dönüş kuralı ile normal kural aynı öncelikteydi</td><td>Yük dengelemeye 40000 öncelik</td></tr>
+<tr><td>Bağlantının ikinci paketi başka sunucuya gitti</td><td>Paket kural yazılmadan POX’a ulaştı</td><td>120 sn bağlantı hafızası</td></tr>
+<tr><td>Doğrudan port taraması alarm vermedi</td><td>Cihaz çifti kuralı SYN’leri POX’tan sakladı</td><td>Bağlantı başına kural</td></tr>
+<tr><td>SYN’ler iki kez sayıldı</td><td>Aynı paket her switch’ten ayrı geldi</td><td>Bağlantıyı bir kez sayan kontrol</td></tr>
+<tr><td>Ölçüm tablosu yanlış çıktı</td><td>Kurallar senaryo bitmeden siliniyordu</td><td>Tabloyu senaryo sürerken okumak</td></tr>
+<tr><td>WAN gecikmesi 40 yerine 50–240 ms</td><td>Mac’teki sanal makinede boştaki işlemci zamanlayıcıyı geç tetikledi</td><td>netem_keepalive.sh</td></tr>
+</table>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Proje adım adım geliştirildi ve her adım git’e ayrı kaydedildi. Bu tablodaki sorunların hepsi gerçek testlerde ortaya çıktı. Öncelik sorunu ve bağlantı hafızası yük dengelemede, kör nokta ve çift sayım anomali tespitinde yaşandı. Ölçüm tablosu sorunu şuydu: kurallar senaryo bitmeden süresi dolup siliniyordu, sonuçta düşük sayılar görüyorduk; tabloyu senaryo sürerken örnekleyen bir izleyici yazdık. Son satır Mac’e özel bir sorun: sanal makinede işlemci boşta beklerken gecikme zamanlayıcısı geç tetikleniyor ve WAN gecikmesi dalgalanıyordu. İşlemciyi düşük öncelikli bir döngüyle uyanık tutan küçük bir betikle çözdük.</aside>
+</section>
+<section id="sinirlar">
+<h2>Bilinen sınırlamalar</h2>
+<div class="cols" style="row-gap:48px">
+<div class="col"><h3>Sabit eşikler</h3><p>Dakikada birkaç port deneyen yavaş bir tarama yakalanmaz.</p></div>
+<div class="col"><h3>Adres başına sayım</h3><p>Çok sayıda adresten gelen dağıtık saldırı (DDoS) yakalanmaz.</p></div>
+<div class="col"><h3>Açık bağlantılar</h3><p>Alarmdan önce açılmış bir bağlantı en fazla 30 sn daha sürer.</p></div>
+<div class="col"><h3>Sağlık kontrolü yok</h3><p>Çöken bir sunucu sırası gelince yine seçilir.</p></div>
+<div class="col"><h3>Tek denetleyici</h3><p>POX durursa yazılmış kurallar çalışır ama yeni bağlantı kurulamaz.</p></div>
+<div class="col"><h3>Tek koşu ölçüm</h3><p>Ölçümler Mininet’te ve tek koşuyla yapıldı.</p></div>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Projenin sınırlarını da söylemek istiyorum. Eşikler sabit; çok yavaş yapılan bir tarama yakalanmaz. Sayım gönderen adrese göre; saldırgan çok sayıda farklı adres kullanırsa her adres sıfırdan başlar. Engel yeni bağlantıları durduruyor, alarmdan önce açılmış bir bağlantı kuralının süresi dolana kadar devam ediyor. Sunucuların ayakta olup olmadığına bakmıyoruz. Tek bir denetleyici var. Ölçümler sanal ağda ve tek koşuyla yapıldı. Bunlar geliştirmeye açık noktalar; örneğin OpenFlow 1.3’e geçilse grup tablolarıyla yük dengeleme switch’in kendisinde yapılabilirdi.</aside>
+</section>
+<section id="calistir" class="alt">
+<h2>Canlı demo</h2>
+<div style="display:flex; gap:64px">
+<div class="code" style="flex:1">
+<p class="c"># 1. terminal: denetleyici</p>
+<p>cd ~/pox &amp;&amp; ./pox.py ders6</p>
+<p class="c"># 2. terminal: kurumsal ağ</p>
+<p>sudo python3 kurumsal_ag.py</p>
+<p>mininet&gt; pingall</p>
+<p>mininet&gt; pc1 curl 10.0.1.100</p>
+<p>mininet&gt; pc1 hping3 -S -p 80 -c 300 10.0.1.100</p>
+<p>mininet&gt; sh ovs-ofctl dump-flows s2</p>
+<p class="c"># dört senaryo ve karşılaştırma</p>
+<p>sudo python3 senaryo.py ders6</p>
+</div>
+<div style="width:520px; display:flex; flex-direction:column; gap:24px">
+<div class="col"><h3>Ne göreceğiz</h3><p>Ağın kurulması, curl ile sırayla web1, web2, web3’ün cevap vermesi, SYN flood’da POX log’undaki ALARM satırı ve s2’deki drop kuralı.</p></div>
+<p class="mono" style="color:#1F4FD1">github.com/tunahntopbas/sdn-kurumsal-ag</p>
+</div>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Şimdi canlı olarak göstereyim. Birinci terminalde POX’u ders6 modülüyle başlatıyorum. İkinci terminalde kurumsal ağı kuruyorum. pingall ile bütün cihazların birbirine ulaştığını gösteriyorum. pc1’den sanal adrese curl atıyorum; her seferinde farklı bir sunucunun cevap verdiğini görüyoruz. Sonra pc1’den hping3 ile SYN flood başlatıyorum; POX log’unda ALARM satırı çıkıyor. Son olarak s2’nin kural tablosunu açıp drop kuralını ve düşen paket sayacını gösteriyorum. Kodun tamamı GitHub’da.</aside>
+</section>
+<section id="kapanis" class="accent">
+<p class="label" style="color:#D6E0FF">SDN Kurumsal Ağ · BSM-451</p>
+<h1 class="rise">Teşekkürler.<br>Sorularınız?</h1>
+<div style="display:flex; flex-direction:column; gap:12px">
+<p class="lede rise" style="--i:1">Bir kurumsal ağı tek bir Python programıyla yönettik: trafiği üç sunucuya eşit dağıttık, SYN flood ve port taramasını ağın girişinde durdurduk.</p>
+<p class="mono rise" style="--i:2; color:#F7F8FA">github.com/tunahntopbas/sdn-kurumsal-ag</p>
+</div>
+<p class="foot">[Ad Soyad · Öğrenci No]</p>
+<p class="pg"></p>
+<aside>Özetle: Mininet ve POX ile merkezi ve şubeleri olan bir kurumsal ağ kurduk. Denetleyiciye yazdığımız yük dengeleyici trafiği üç sunucuya eşit dağıttı. Anomali tespiti SYN flood ve port taramasını yakalayıp saldırganı ilk switch’te durdurdu. Dinlediğiniz için teşekkürler, sorularınızı alabilirim. Olası sorular: Neden POX? Konu tanımı istiyordu ve Python ile yazıldığı için öğrenmesi kolay. Neden OpenFlow 1.0? POX’un desteklediği sürüm. Saldırgan adres değiştirirse? Sayım adrese göre olduğu için sıfırdan başlar; bu bilinen bir sınırlama.</aside>
+</section>
+
+</div>
+<div id="notes"></div>
+<div id="hint">← → gezin · F tam ekran · N notlar</div>
+<script>
+var S=[].slice.call(document.querySelectorAll('#stage>section')),i=0,st=document.getElementById('stage'),nt=document.getElementById('notes');
+function fit(){var k=Math.min(innerWidth/1920,innerHeight/1080);st.style.transform='scale('+k+') translate(-50%,-50%)';st.style.transformOrigin='0 0';st.style.left='50%';st.style.top='50%';st.style.transform='translate(-50%,-50%) scale('+k+')';st.style.transformOrigin='50% 50%';st.style.left='calc(50% - 960px)';st.style.top='calc(50% - 540px)';st.style.transform='scale('+k+')';}
+function go(n){i=Math.max(0,Math.min(S.length-1,n));S.forEach(function(s,j){s.classList.toggle('on',j===i)});var a=S[i].querySelector('aside');nt.textContent=(i+1)+' / '+S.length+'  —  '+(a?a.textContent:'');try{history.replaceState(null,'','#'+(i+1))}catch(e){}}
+addEventListener('keydown',function(e){var k=e.key;if(k==='ArrowRight'||k==='PageDown'||k===' ')go(i+1);else if(k==='ArrowLeft'||k==='PageUp')go(i-1);else if(k==='Home')go(0);else if(k==='End')go(S.length-1);else if(k==='f'||k==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}else if(k==='n'||k==='N')nt.classList.toggle('show');});
+addEventListener('click',function(e){if(e.target.closest('#notes'))return;go(e.clientX<innerWidth/3?i-1:i+1)});
+addEventListener('resize',fit);fit();go((parseInt(location.hash.slice(1))||1)-1);
+</script></body></html>

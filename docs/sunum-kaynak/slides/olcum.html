@@ -1,0 +1,23 @@
+<section id="olcum">
+<h2>Ölçümler: korumasız ve korumalı</h2>
+<div style="display:flex; gap:80px; flex:1">
+<div class="bars" style="flex:1">
+<div class="metric rise" style="--i:0"><p class="mt">SYN flood: cevaplanan SYN (300 gönderildi)</p>
+<div class="bar"><p class="who">Korumasız</p><div class="track"><div class="fill" style="width:100%"></div></div><p class="num">300</p></div>
+<div class="bar"><p class="who">Korumalı</p><div class="track"><div class="fill on" style="width:16.3%"></div></div><p class="num">49</p></div></div>
+<div class="metric rise" style="--i:1"><p class="mt">SYN flood: switch tablosunun en yüksek boyutu</p>
+<div class="bar"><p class="who">Korumasız</p><div class="track"><div class="fill" style="width:100%"></div></div><p class="num">602</p></div>
+<div class="bar"><p class="who">Korumalı</p><div class="track"><div class="fill on" style="width:32.7%"></div></div><p class="num">197</p></div></div>
+<div class="metric rise" style="--i:2"><p class="mt">Port taraması: keşfedilen port (iki senaryoda da)</p>
+<div class="bar"><p class="who">Korumasız</p><div class="track"><div class="fill" style="width:100%"></div></div><p class="num">100</p></div>
+<div class="bar"><p class="who">Korumalı</p><div class="track"><div class="fill on" style="width:0%"></div></div><p class="num">0</p></div></div>
+</div>
+<div style="width:440px; display:flex; flex-direction:column; gap:48px">
+<div class="stat"><p class="big" style="font-size:64px">20 / 20 / 20</p><p class="small">Normal trafikte 60 istek üç sunucuya eşit dağıldı, hiçbiri başarısız olmadı.</p></div>
+<div class="stat"><p class="big" style="font-size:64px">250</p><p class="small">SYN switch’te düştü. Saldırı sürerken pc2 hizmet almaya devam etti.</p></div>
+</div>
+</div>
+<p class="foot">Aynı betik (senaryo.py) önce korumasız, sonra korumalı denetleyiciyle çalıştırıldı</p>
+<p class="pg"></p>
+<aside>Dört senaryoyu tek bir betikle iki kez çalıştırdık: önce sadece yük dengeleme yapan korumasız denetleyiciyle, sonra anomali tespiti de eklenmiş korumalı denetleyiciyle. Betik ağı kendisi kuruyor, trafiği üretiyor ve switch tablolarını senaryo sürerken saniyede üç kez okuyor. Sonuçlar: SYN flood’da korumasız sistemde 300 SYN’in hepsi cevaplandı, korumalıda sadece 49’u; 250’si switch’te düştü. Switch tablosu 602 kural yerine 197’de kaldı, yaklaşık üçte bir. Port taramalarında korumasız sistemde saldırgan bütün portları ve açık 80 portunu gördü, korumalıda hiçbir port bulamadı. Normal trafikte yük tam eşit dağıldı. Korumalı sürüm normal trafikte 3 ile 9 ms daha yavaş göründü; tek ölçüm olduğu için kesin bir fark saymıyoruz, muhtemel sebep her yeni bağlantının ilk paketinin POX’a gidip gelmesi. Ölçümü 17 Kasım’da baştan tekrar çalıştırdık, aynı sonuçları aldık.</aside>
+</section>

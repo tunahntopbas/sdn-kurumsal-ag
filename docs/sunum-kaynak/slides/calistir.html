@@ -1,0 +1,24 @@
+<section id="calistir" class="alt">
+<h2>Canlı demo</h2>
+<div style="display:flex; gap:64px">
+<div class="code" style="flex:1">
+<p class="c"># 1. terminal: denetleyici</p>
+<p>cd ~/pox &amp;&amp; ./pox.py ders6</p>
+<p class="c"># 2. terminal: kurumsal ağ</p>
+<p>sudo python3 kurumsal_ag.py</p>
+<p>mininet&gt; pingall</p>
+<p>mininet&gt; pc1 curl 10.0.1.100</p>
+<p>mininet&gt; pc1 hping3 -S -p 80 -c 300 10.0.1.100</p>
+<p>mininet&gt; sh ovs-ofctl dump-flows s2</p>
+<p class="c"># dört senaryo ve karşılaştırma</p>
+<p>sudo python3 senaryo.py ders6</p>
+</div>
+<div style="width:520px; display:flex; flex-direction:column; gap:24px">
+<div class="col"><h3>Ne göreceğiz</h3><p>Ağın kurulması, curl ile sırayla web1, web2, web3’ün cevap vermesi, SYN flood’da POX log’undaki ALARM satırı ve s2’deki drop kuralı.</p></div>
+<p class="mono" style="color:#1F4FD1">github.com/tunahntopbas/sdn-kurumsal-ag</p>
+</div>
+</div>
+<p class="foot">SDN Kurumsal Ağ · BSM-451</p>
+<p class="pg"></p>
+<aside>Şimdi canlı olarak göstereyim. Birinci terminalde POX’u ders6 modülüyle başlatıyorum. İkinci terminalde kurumsal ağı kuruyorum. pingall ile bütün cihazların birbirine ulaştığını gösteriyorum. pc1’den sanal adrese curl atıyorum; her seferinde farklı bir sunucunun cevap verdiğini görüyoruz. Sonra pc1’den hping3 ile SYN flood başlatıyorum; POX log’unda ALARM satırı çıkıyor. Son olarak s2’nin kural tablosunu açıp drop kuralını ve düşen paket sayacını gösteriyorum. Kodun tamamı GitHub’da.</aside>
+</section>

@@ -1,0 +1,24 @@
+{
+  "v": 5,
+  "createdOnFiles": { "v": 1, "at": "2026-11-17T10:10:00Z" },
+  "lists": "css",
+  "format": { "v": 1, "shared": ["project/deck.css"] },
+  "title": "SDN Kurumsal Ağ Sunumu",
+  "cover": "cover",
+  "order": ["cover", "ozet", "odev", "sdn", "openflow", "topoloji", "adresler", "kontrol", "araclar", "vip", "lb1", "lb2", "lb3", "lb4", "kurallar", "anomali", "syn1", "syn2", "syn3", "kornokta", "seq1", "seq2", "olcum", "sorunlar", "sinirlar", "calistir", "kapanis"],
+  "sections": {
+    "giris": { "description": "Projenin ne olduğu ve ödevin hangi maddelerini karşıladığı.", "start": "cover" },
+    "temel": { "description": "SDN fikri ve OpenFlow'un üç mesajı.", "start": "sdn" },
+    "ag": { "description": "Kurumsal ağın topolojisi, adres planı, kontrol katmanı ve araçlar.", "start": "topoloji" },
+    "yuk": { "description": "Sanal adres ve round robin ile yük dengeleme, adım adım.", "start": "vip" },
+    "anomali": { "description": "SYN flood ve port taraması tespiti, engelleme ve kör nokta.", "start": "anomali" },
+    "dogrulama": { "description": "UML sıra diyagramları ve ölçüm sonuçları.", "start": "seq1" },
+    "kapanis": { "description": "Karşılaşılan sorunlar, sınırlamalar, demo ve sorular.", "start": "sorunlar" }
+  },
+  "faces": {
+    "archivo": { "family": "Archivo", "href": "https://fonts.googleapis.com/css2?family=Archivo:wght@400..700&display=swap" },
+    "source-serif-4": { "family": "Source Serif 4", "href": "https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600&display=swap" },
+    "jetbrains-mono": { "family": "JetBrains Mono", "href": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" }
+  },
+  "designSystems": []
+}
